@@ -66,14 +66,14 @@ export class TypeScriptParser extends BaseParser {
      */
     private getTypeScriptParserPath(): string {
         // The extension context provides the path to the extension's installation directory
-        const extensionPath = vscode.extensions.getExtension('your-publisher-name.dependency-analytics')?.extensionPath;
+        const extensionPath = vscode.extensions.getExtension('Optivance.dependency-analytics-tool')?.extensionPath;
         
         if (!extensionPath) {
             throw new Error('Could not determine extension path');
         }
         
         // The TypeScript parser script is in the extension's resources/parsers/typescript directory
-        const tsParserPath = path.join(extensionPath, 'resources', 'parsers', 'typescript', 'ts-parser.js');
+        const tsParserPath = path.join(extensionPath, 'resources', 'parsers', 'typescript', 'cli.js');
         
         // Verify that the parser exists
         if (!fs.existsSync(tsParserPath)) {

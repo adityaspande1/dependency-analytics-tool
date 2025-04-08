@@ -66,7 +66,7 @@ export class PythonParser extends BaseParser {
      */
     private getPythonParserPath(): string {
         // The extension context provides the path to the extension's installation directory
-        const extensionPath = vscode.extensions.getExtension('your-publisher-name.dependency-analytics')?.extensionPath;
+        const extensionPath = vscode.extensions.getExtension('Optivance.dependency-analytics-tool')?.extensionPath;
         
         if (!extensionPath) {
             throw new Error('Could not determine extension path');

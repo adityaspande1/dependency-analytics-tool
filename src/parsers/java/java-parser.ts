@@ -32,7 +32,7 @@ export class JavaParser extends BaseParser {
             fs.mkdirSync(outputDir, { recursive: true });
         }
         
-        const outputFilePath = path.join(outputDir, 'language-dependencies.json');
+        const outputFilePath = path.join(outputDir, 'dependencies.json');
         
         // Delete existing output file if it exists
         if (fs.existsSync(outputFilePath)) {
@@ -69,7 +69,7 @@ export class JavaParser extends BaseParser {
      */
     private getJavaParserPath(): string {
         // The extension context provides the path to the extension's installation directory
-        const extensionPath = vscode.extensions.getExtension('your-publisher-name.dependency-analytics')?.extensionPath;
+        const extensionPath = vscode.extensions.getExtension('Optivance.dependency-analytics-tool')?.extensionPath;
         
         if (!extensionPath) {
             throw new Error('Could not determine extension path');

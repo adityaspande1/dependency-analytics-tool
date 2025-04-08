@@ -71,12 +71,13 @@ const fs = __importStar(__webpack_require__(4));
 const project_detector_1 = __webpack_require__(5);
 const parser_registry_1 = __webpack_require__(8);
 const java_1 = __webpack_require__(9);
-const typescript_1 = __webpack_require__(27);
-const dependency_tree_1 = __webpack_require__(14);
-const structure_tree_1 = __webpack_require__(15);
-const mermaid_generator_1 = __webpack_require__(18);
-const utils_1 = __webpack_require__(19);
-const converter_1 = __webpack_require__(22);
+const python_1 = __webpack_require__(28);
+const typescript_1 = __webpack_require__(19);
+const dependency_tree_1 = __webpack_require__(21);
+const structure_tree_1 = __webpack_require__(22);
+const mermaid_generator_1 = __webpack_require__(23);
+const utils_1 = __webpack_require__(25);
+const converter_1 = __webpack_require__(13);
 function activate(context) {
     console.log('Dependency Analytics Extension is now active');
     // Create output channel for logs
@@ -90,7 +91,7 @@ function activate(context) {
     // Create parser registry and register parsers
     const parserRegistry = new parser_registry_1.ParserRegistry();
     parserRegistry.registerParser(new java_1.JavaParser());
-    // parserRegistry.registerParser(new PythonParser());
+    parserRegistry.registerParser(new python_1.PythonParser());
     parserRegistry.registerParser(new typescript_1.TypeScriptParser());
     // Create project detector
     const projectDetector = new project_detector_1.ProjectDetector();
@@ -231,7 +232,7 @@ function activate(context) {
         structureTreeProvider.setNode(node);
     }), 
     // Show diagram command
-    vscode.commands.registerCommand('dependencyAnalytics.showDiagram', async (node) => {
+    vscode.commands.registerCommand('dependencyAnalytics.showClassDiagram', async (node) => {
         if (!node) {
             vscode.window.showErrorMessage('Please select a node to show its diagram');
             return;
@@ -672,7 +673,7 @@ class JavaParser extends base_parser_1.BaseParser {
         if (!fs.existsSync(outputDir)) {
             fs.mkdirSync(outputDir, { recursive: true });
         }
-        const outputFilePath = path.join(outputDir, 'language-dependencies.json');
+        const outputFilePath = path.join(outputDir, 'dependencies.json');
         // Delete existing output file if it exists
         if (fs.existsSync(outputFilePath)) {
             fs.unlinkSync(outputFilePath);
@@ -700,7 +701,7 @@ class JavaParser extends base_parser_1.BaseParser {
      */
     getJavaParserPath() {
         // The extension context provides the path to the extension's installation directory
-        const extensionPath = vscode.extensions.getExtension('your-publisher-name.dependency-analytics')?.extensionPath;
+        const extensionPath = vscode.extensions.getExtension('Optivance.dependency-analytics-tool')?.extensionPath;
         if (!extensionPath) {
             throw new Error('Could not determine extension path');
         }
@@ -751,7 +752,7 @@ module.exports = require("child_process");
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.BaseParser = void 0;
-const converter_1 = __webpack_require__(22);
+const converter_1 = __webpack_require__(13);
 /**
  * Base class for language-specific parsers
  */
@@ -780,8 +781,1157 @@ exports.BaseParser = BaseParser;
 
 
 /***/ }),
-/* 13 */,
+/* 13 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.detectDependencyType = detectDependencyType;
+exports.convertDependencies = convertDependencies;
+const java_converter_1 = __webpack_require__(14);
+const typescript_converter_1 = __webpack_require__(16);
+const python_converter_1 = __webpack_require__(17);
+/**
+ * Detect the type of dependency data based on file content
+ */
+function detectDependencyType(data) {
+    // Check for React TypeScript component-based dependencies (new format)
+    if (!Array.isArray(data) && data.components && typeof data.components === 'object') {
+        return 'typescript';
+    }
+    // Check for TypeScript dependencies (legacy format)
+    if (Array.isArray(data) && data.length > 0 && data[0].fileName && data[0].exports) {
+        return 'typescript';
+    }
+    // Check for Java dependencies
+    if (!Array.isArray(data) && data.name && data.elements) {
+        return 'java';
+    }
+    // Check for Python dependencies
+    if (!Array.isArray(data) && data.metadata && data.apps && data.models) {
+        return 'python';
+    }
+    // Will add more format detection as needed
+    return 'unknown';
+}
+/**
+ * Convert dependencies to standardized format
+ */
+function convertDependencies(data) {
+    const type = detectDependencyType(data);
+    switch (type) {
+        case 'typescript':
+            return (0, typescript_converter_1.convertTypeScriptDependencies)(data);
+        case 'java':
+            return (0, java_converter_1.convertJavaDependencies)(data);
+        case 'python':
+            return (0, python_converter_1.convertPythonDependencies)(data);
+        default:
+            throw new Error(`Unknown dependency data format`);
+    }
+}
+// Export types
+__exportStar(__webpack_require__(18), exports);
+
+
+/***/ }),
 /* 14 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+// src/converter/java-converter.ts
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.convertJavaDependencies = convertJavaDependencies;
+const utils_1 = __webpack_require__(15);
+function convertJavaDependencies(javaDependencies) {
+    const nodes = [];
+    const edges = [];
+    const nodeMap = new Map();
+    // Process the Java package structure
+    processJavaPackage(javaDependencies, nodes, nodeMap);
+    // Create edges based on node relationships
+    createJavaEdges(nodes, edges, nodeMap);
+    return {
+        nodes,
+        edges,
+        metadata: {
+            projectType: 'java',
+            projectName: javaDependencies.name || 'Java Project',
+            convertedAt: new Date().toISOString(),
+            originalFormat: {}
+        }
+    };
+}
+function processJavaPackage(javaPackage, nodes, nodeMap) {
+    if (!javaPackage.elements) {
+        return;
+    }
+    // Process all elements in the package
+    javaPackage.elements.forEach(element => {
+        if (element.class) {
+            // This is a class
+            const javaClass = element;
+            createJavaClassNode(javaClass, nodes, nodeMap);
+        }
+        else if (element.package) {
+            // This is a package, process it recursively
+            processJavaPackage(element, nodes, nodeMap);
+        }
+    });
+}
+function createJavaClassNode(javaClass, nodes, nodeMap) {
+    const nodeId = (0, utils_1.generateId)('java', javaClass.name);
+    nodeMap.set(javaClass.name, nodeId);
+    const sections = [];
+    // Create class section with basic information
+    const classInfoItems = [];
+    // Add inheritance info
+    if (javaClass.superClassName && javaClass.superClassName !== 'java.lang.Object') {
+        classInfoItems.push((0, utils_1.createItem)((0, utils_1.generateId)('extends', `${javaClass.name}_extends`), `extends ${(0, utils_1.getSimpleName)(javaClass.superClassName)}`, 'inheritance'));
+    }
+    // Add interfaces
+    if (javaClass.interfaces && javaClass.interfaces.length > 0) {
+        const interfaces = javaClass.interfaces.map(utils_1.getSimpleName).join(', ');
+        classInfoItems.push((0, utils_1.createItem)((0, utils_1.generateId)('implements', `${javaClass.name}_implements`), `implements ${interfaces}`, 'interface'));
+    }
+    if (classInfoItems.length > 0) {
+        sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_info`), 'Class Info', classInfoItems));
+    }
+    // Create fields section
+    if (javaClass.fields && javaClass.fields.length > 0) {
+        const fieldItems = javaClass.fields.map(field => {
+            const modifiers = [];
+            if (field.modifier) {
+                modifiers.push(field.modifier.toLowerCase());
+            }
+            if (field.static) {
+                modifiers.push('static');
+            }
+            if (field.final) {
+                modifiers.push('final');
+            }
+            return (0, utils_1.createItem)((0, utils_1.generateId)('field', `${javaClass.name}_${field.name}`), `${modifiers.join(' ')} ${(0, utils_1.getSimpleName)(field.type)} ${field.name}`, 'field', { type: field.type });
+        });
+        sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_fields`), 'Fields', fieldItems));
+    }
+    // Create methods section
+    if (javaClass.methods && javaClass.methods.length > 0) {
+        const methodItems = javaClass.methods.map(method => {
+            const modifiers = [];
+            if (method.accessModifier) {
+                modifiers.push(method.accessModifier.toLowerCase());
+            }
+            if (method.static) {
+                modifiers.push('static');
+            }
+            if (method.final) {
+                modifiers.push('final');
+            }
+            if (method.abstract) {
+                modifiers.push('abstract');
+            }
+            // For constructors, display name differently
+            const isConstructor = method.name === '<init>';
+            const displayName = isConstructor ? (0, utils_1.getSimpleName)(javaClass.name) : method.name;
+            // Simplify parameter types to just the class name, not the full package
+            const params = method.parameters.map(utils_1.getSimpleName).join(', ');
+            // Display return type for non-constructors
+            const returnTypeStr = isConstructor ? '' : `: ${(0, utils_1.getSimpleName)(method.returnType)}`;
+            return (0, utils_1.createItem)((0, utils_1.generateId)('method', `${javaClass.name}_${method.name}`), `${modifiers.join(' ')} ${displayName}(${params})${returnTypeStr}`, isConstructor ? 'constructor' : 'method', {
+                returnType: method.returnType,
+                isConstructor
+            });
+        });
+        sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_methods`), 'Methods', methodItems));
+    }
+    // Create imports section if available
+    if (javaClass.importedPackages && javaClass.importedPackages.length > 0) {
+        const importItems = javaClass.importedPackages.map(pkg => {
+            return (0, utils_1.createItem)((0, utils_1.generateId)('import', `${javaClass.name}_${pkg.name}`), pkg.name, 'package');
+        });
+        sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_imports`), 'Imports', importItems));
+    }
+    // Create the node
+    nodes.push({
+        id: nodeId,
+        title: (0, utils_1.getSimpleName)(javaClass.name),
+        type: javaClass.interface ? 'interface' : 'class',
+        sections,
+        metadata: {
+            fullName: javaClass.name,
+            packageName: javaClass.packageName,
+            sourceFile: javaClass.sourceFile,
+            isAbstract: javaClass.abstract,
+            isFinal: javaClass.final,
+            superClassName: javaClass.superClassName,
+            interfaces: javaClass.interfaces,
+            outGoingDependencies: javaClass.outGoingDependencies,
+            incomingDependencies: javaClass.incomingDependencies
+        }
+    });
+}
+function createJavaEdges(nodes, edges, nodeMap) {
+    nodes.forEach(node => {
+        const metadata = node.metadata;
+        // Skip if no metadata or not a class
+        if (!metadata || (node.type !== 'class' && node.type !== 'interface')) {
+            return;
+        }
+        // Create inheritance edge if there's a superclass
+        if (metadata.fullName && metadata.superClassName &&
+            metadata.superClassName !== 'java.lang.Object') {
+            const targetNodeId = nodeMap.get(metadata.superClassName);
+            if (targetNodeId) {
+                edges.push({
+                    source: node.id,
+                    target: targetNodeId,
+                    type: 'inheritance',
+                    metadata: {
+                        relationship: 'extends'
+                    }
+                });
+            }
+        }
+        // Create interface implementation edges
+        if (metadata.interfaces) {
+            metadata.interfaces.forEach((interfaceName) => {
+                const targetNodeId = nodeMap.get(interfaceName);
+                if (targetNodeId) {
+                    edges.push({
+                        source: node.id,
+                        target: targetNodeId,
+                        type: 'implementation',
+                        metadata: {
+                            relationship: 'implements'
+                        }
+                    });
+                }
+            });
+        }
+        // Create dependency edges
+        if (metadata.outGoingDependencies) {
+            metadata.outGoingDependencies.forEach((dependency) => {
+                const targetNodeId = nodeMap.get(dependency);
+                if (targetNodeId) {
+                    edges.push({
+                        source: node.id,
+                        target: targetNodeId,
+                        type: 'dependency',
+                        metadata: {
+                            direction: 'outgoing'
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
+
+
+/***/ }),
+/* 15 */
+/***/ ((__unused_webpack_module, exports) => {
+
+
+// src/converter/utils.ts
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.generateId = generateId;
+exports.getSimpleName = getSimpleName;
+exports.createSection = createSection;
+exports.createItem = createItem;
+exports.determineNodeType = determineNodeType;
+/**
+ * Generates a unique ID for a node or edge
+ */
+function generateId(prefix, name) {
+    return `${prefix}_${name.replace(/[^a-zA-Z0-9]/g, '_')}`;
+}
+/**
+ * Extracts the simple name from a fully qualified Java class name
+ * e.g., com.sample.book.Book -> Book
+ */
+function getSimpleName(fullyQualifiedName) {
+    if (!fullyQualifiedName) {
+        return '';
+    }
+    const parts = fullyQualifiedName.split('.');
+    return parts[parts.length - 1];
+}
+/**
+ * Creates a section with items
+ */
+function createSection(id, name, items, metadata) {
+    return {
+        id,
+        name,
+        items,
+        metadata
+    };
+}
+/**
+ * Creates an item for a section
+ */
+function createItem(id, value, icon, metadata) {
+    return {
+        id,
+        value,
+        icon,
+        metadata
+    };
+}
+/**
+ * Determines the type of import/dependency based on the name pattern
+ */
+function determineNodeType(name, additionalInfo) {
+    if (additionalInfo?.class === true || additionalInfo?.isClass === true) {
+        return additionalInfo.interface || additionalInfo.isInterface ? 'interface' : 'class';
+    }
+    if (additionalInfo?.type === 'function' || name.includes('()') || name.endsWith(')')) {
+        return 'function';
+    }
+    if (additionalInfo?.type === 'model') {
+        return 'model';
+    }
+    if (additionalInfo?.type === 'view') {
+        return 'view';
+    }
+    if (name.endsWith('.ts') || name.endsWith('.js') || name.endsWith('.jsx') || name.endsWith('.tsx')) {
+        return 'file';
+    }
+    // Default to module if we can't determine more specific type
+    return 'module';
+}
+
+
+/***/ }),
+/* 16 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+// src/converter/typescript-converter.ts
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.convertTypeScriptDependencies = convertTypeScriptDependencies;
+const utils_1 = __webpack_require__(15);
+// Helper to format function parameters
+function formatParams(params = []) {
+    if (!params || params.length === 0) {
+        return '()';
+    }
+    return `(${params.map((p) => p.name).join(', ')})`;
+}
+// Check if the input data is in the component-based format
+function isComponentBasedFormat(data) {
+    return !Array.isArray(data) && data.components !== undefined;
+}
+// Convert TypeScript dependencies to standardized format
+function convertTypeScriptDependencies(typescriptData) {
+    // Detect data format and use appropriate converter
+    if (isComponentBasedFormat(typescriptData)) {
+        return convertComponentBasedTypeScript(typescriptData);
+    }
+    else {
+        // Legacy format handling
+        return convertLegacyTypeScriptDependencies(typescriptData);
+    }
+}
+// Convert component-based TypeScript format
+function convertComponentBasedTypeScript(data) {
+    const nodes = [];
+    const edges = [];
+    const nodeMap = new Map(); // Maps component names to node IDs
+    const filePathMap = new Map(); // Maps file paths to node IDs
+    // Create nodes for each component
+    Object.values(data.components).forEach(component => {
+        const nodeId = (0, utils_1.generateId)('comp', component.name);
+        nodeMap.set(component.name, nodeId);
+        filePathMap.set(component.filePath, nodeId);
+        const sections = [];
+        // Create props section if available
+        if (component.props && component.props.length > 0) {
+            const propItems = component.props.map((prop) => {
+                const required = prop.required ? ' (required)' : '';
+                const type = prop.type ? `: ${prop.type}` : '';
+                return (0, utils_1.createItem)((0, utils_1.generateId)('prop', `${component.name}_${prop.name}`), `${prop.name}${type}${required}`, 'prop');
+            });
+            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_props`), 'Props', propItems));
+        }
+        // Create state section if available
+        if (component.state && component.state.length > 0) {
+            const stateItems = component.state.map((state) => {
+                const type = state.type ? `: ${state.type}` : '';
+                const initialValue = state.initialValue ? ` = ${state.initialValue}` : '';
+                return (0, utils_1.createItem)((0, utils_1.generateId)('state', `${component.name}_${state.name}`), `${state.name}${type}${initialValue}`, 'state');
+            });
+            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_state`), 'State', stateItems));
+        }
+        // Create hooks section if available
+        if (component.hooks && component.hooks.length > 0) {
+            const hookItems = component.hooks.map((hook) => {
+                const custom = hook.customHook ? ' (custom)' : '';
+                return (0, utils_1.createItem)((0, utils_1.generateId)('hook', `${component.name}_${hook.type}`), `${hook.type}${custom}`, 'hook');
+            });
+            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_hooks`), 'Hooks', hookItems));
+        }
+        // Create dependencies section if available
+        if (component.dependencies && component.dependencies.length > 0) {
+            const dependencyItems = component.dependencies.map((dep) => {
+                const external = dep.isExternal ? ' (external)' : '';
+                return (0, utils_1.createItem)((0, utils_1.generateId)('dep', `${component.name}_${dep.name}`), `${dep.name} from '${dep.path}'${external}`, 'dependency');
+            });
+            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_dependencies`), 'Dependencies', dependencyItems));
+        }
+        // Create children section if available
+        if (component.children && component.children.length > 0) {
+            const childrenItems = component.children.map((child) => {
+                return (0, utils_1.createItem)((0, utils_1.generateId)('child', `${component.name}_${child}`), child, 'component');
+            });
+            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_children`), 'Children', childrenItems));
+        }
+        nodes.push({
+            id: nodeId,
+            title: component.name,
+            type: 'component',
+            sections,
+            metadata: {
+                filePath: component.filePath,
+                name: component.name
+            }
+        });
+    });
+    // Create edges for component dependencies
+    Object.values(data.components).forEach(component => {
+        const sourceNodeId = nodeMap.get(component.name);
+        if (!sourceNodeId) {
+            return;
+        }
+        // Create edges for component dependencies
+        if (component.dependencies) {
+            component.dependencies.forEach((dep) => {
+                const targetNodeId = nodeMap.get(dep.name);
+                if (targetNodeId) {
+                    edges.push({
+                        source: sourceNodeId,
+                        target: targetNodeId,
+                        type: 'dependency',
+                        metadata: {
+                            path: dep.path,
+                            isExternal: dep.isExternal
+                        }
+                    });
+                }
+            });
+        }
+        // Create edges for component children
+        if (component.children) {
+            component.children.forEach((child) => {
+                const targetNodeId = nodeMap.get(child);
+                if (targetNodeId) {
+                    edges.push({
+                        source: sourceNodeId,
+                        target: targetNodeId,
+                        type: 'renders',
+                        metadata: {
+                            relationship: 'parent-child'
+                        }
+                    });
+                }
+            });
+        }
+    });
+    return {
+        nodes,
+        edges,
+        metadata: {
+            projectType: 'typescript',
+            projectName: 'React TypeScript Project',
+            convertedAt: new Date().toISOString(),
+            originalFormat: {}
+        }
+    };
+}
+// Legacy TypeScript converter
+function convertLegacyTypeScriptDependencies(dependencies) {
+    const nodes = [];
+    const edges = [];
+    const nodeMap = new Map(); // Maps file paths to node IDs
+    // First pass: create nodes and build id map
+    dependencies.forEach(dependency => {
+        const nodeId = (0, utils_1.generateId)('ts', dependency.filePath);
+        nodeMap.set(dependency.filePath, nodeId);
+        const sections = [];
+        // Create imports section if available
+        if (dependency.imports && dependency.imports.length > 0) {
+            const importItems = dependency.imports.map((imp) => {
+                const value = imp.namedImports && imp.namedImports.length > 0
+                    ? `{ ${imp.namedImports.join(', ')} } from '${imp.path}'`
+                    : imp.defaultImport
+                        ? `${imp.defaultImport} from '${imp.path}'`
+                        : `import '${imp.path}'`;
+                return (0, utils_1.createItem)((0, utils_1.generateId)('imp', `${dependency.filePath}_${imp.path}`), value, 'import', {
+                    path: imp.path,
+                    isTypeOnly: imp.isTypeOnly,
+                    resolvedFilePath: imp.resolvedFilePath
+                });
+            });
+            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_imports`), 'Imports', importItems));
+        }
+        // Create exports section if available
+        const exportItems = [];
+        // Add exported functions
+        if (dependency.exports && dependency.exports.functions && dependency.exports.functions.length > 0) {
+            dependency.exports.functions.forEach((func) => {
+                if (func.isExported) {
+                    exportItems.push((0, utils_1.createItem)((0, utils_1.generateId)('func', `${dependency.filePath}_${func.name}`), `${func.name}${formatParams(func.params)}: ${func.returnType || 'void'}`, 'function', { isExported: true }));
+                }
+            });
+        }
+        // Add exported components
+        if (dependency.exports && dependency.exports.components && dependency.exports.components.length > 0) {
+            dependency.exports.components.forEach((comp) => {
+                exportItems.push((0, utils_1.createItem)((0, utils_1.generateId)('comp', `${dependency.filePath}_${comp.name}`), `${comp.name}: ${comp.type || 'Component'}`, 'component', { isExported: true }));
+            });
+        }
+        // Add exported types/interfaces
+        if (dependency.exports && dependency.exports.interfaces && dependency.exports.interfaces.length > 0) {
+            dependency.exports.interfaces.forEach((intf) => {
+                exportItems.push((0, utils_1.createItem)((0, utils_1.generateId)('intf', `${dependency.filePath}_${intf.name}`), `${intf.name}`, 'interface', { isExported: true }));
+            });
+        }
+        if (exportItems.length > 0) {
+            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_exports`), 'Exports', exportItems));
+        }
+        nodes.push({
+            id: nodeId,
+            title: dependency.fileName,
+            type: 'file',
+            sections,
+            metadata: {
+                filePath: dependency.filePath,
+                fileName: dependency.fileName,
+                outgoingDependencies: dependency.outgoingDependencies,
+                incomingDependencies: dependency.incomingDependencies
+            }
+        });
+    });
+    // Second pass: create edges
+    dependencies.forEach(dependency => {
+        const sourceNodeId = nodeMap.get(dependency.filePath);
+        if (!sourceNodeId) {
+            return;
+        }
+        // Create outgoing dependency edges
+        if (dependency.outgoingDependencies) {
+            dependency.outgoingDependencies.forEach((target) => {
+                const targetNodeId = nodeMap.get(target);
+                if (targetNodeId) {
+                    edges.push({
+                        source: sourceNodeId,
+                        target: targetNodeId,
+                        type: 'dependency',
+                        metadata: {
+                            direction: 'outgoing'
+                        }
+                    });
+                }
+            });
+        }
+        // Create incoming dependency edges
+        if (dependency.incomingDependencies) {
+            dependency.incomingDependencies.forEach((source) => {
+                const sourceId = nodeMap.get(source);
+                if (sourceId) {
+                    edges.push({
+                        source: sourceId,
+                        target: sourceNodeId,
+                        type: 'dependency',
+                        metadata: {
+                            direction: 'incoming'
+                        }
+                    });
+                }
+            });
+        }
+    });
+    return {
+        nodes,
+        edges,
+        metadata: {
+            projectType: 'typescript',
+            projectName: 'TypeScript Project',
+            convertedAt: new Date().toISOString(),
+            originalFormat: {}
+        }
+    };
+}
+
+
+/***/ }),
+/* 17 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+// src/converter/python-converter.ts
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.convertPythonDependencies = convertPythonDependencies;
+const utils_1 = __webpack_require__(15);
+function convertPythonDependencies(pythonDependencies) {
+    // Check if this is a Django format (which has specific structure)
+    if (pythonDependencies.apps && pythonDependencies.models && pythonDependencies.views) {
+        return convertDjangoDependencies(pythonDependencies);
+    }
+    // Regular Python project
+    const nodes = [];
+    const edges = [];
+    const nodeMap = new Map();
+    // Process modules first
+    if (pythonDependencies.modules) {
+        pythonDependencies.modules.forEach((module) => {
+            const nodeId = (0, utils_1.generateId)('python_module', module.name);
+            nodeMap.set(module.name, nodeId);
+            const sections = [];
+            // Add imports section
+            if (module.imports && module.imports.length > 0) {
+                const importItems = module.imports.map(imp => {
+                    return (0, utils_1.createItem)((0, utils_1.generateId)('import', `${module.name}_${imp.module}`), `from ${imp.module} import ${imp.names.join(', ')}`, 'import');
+                });
+                sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_imports`), 'Imports', importItems));
+            }
+            // Add exports section
+            if (module.exports && module.exports.length > 0) {
+                const exportItems = module.exports.map(exp => {
+                    return (0, utils_1.createItem)((0, utils_1.generateId)('export', `${module.name}_${exp}`), exp, 'export');
+                });
+                sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_exports`), 'Exports', exportItems));
+            }
+            nodes.push({
+                id: nodeId,
+                title: module.name,
+                type: module.is_package ? 'package' : 'module',
+                sections,
+                metadata: {
+                    path: module.path,
+                    is_package: module.is_package
+                }
+            });
+        });
+    }
+    // Process models
+    if (pythonDependencies.models) {
+        pythonDependencies.models.forEach((model) => {
+            const nodeId = (0, utils_1.generateId)('python_model', model.name);
+            nodeMap.set(model.name, nodeId);
+            const sections = [];
+            // Class inheritance info
+            if (model.bases && model.bases.length > 0) {
+                const baseItems = model.bases.map(base => {
+                    return (0, utils_1.createItem)((0, utils_1.generateId)('base', `${model.name}_${base}`), base, 'inheritance');
+                });
+                sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_bases`), 'Inheritance', baseItems));
+            }
+            // Add fields section
+            if (model.fields && model.fields.length > 0) {
+                const fieldItems = model.fields.map(field => {
+                    const attributesStr = Object.entries(field.attributes || {})
+                        .map(([key, value]) => `${key}=${JSON.stringify(value)}`)
+                        .join(', ');
+                    return (0, utils_1.createItem)((0, utils_1.generateId)('field', `${model.name}_${field.name}`), `${field.name}: ${field.type}${attributesStr ? ` (${attributesStr})` : ''}`, 'field', field.attributes);
+                });
+                sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_fields`), 'Fields', fieldItems));
+            }
+            // Add methods section
+            if (model.methods && model.methods.length > 0) {
+                const methodItems = model.methods.map(method => {
+                    const modifiers = [];
+                    if (method.is_static)
+                        modifiers.push('staticmethod');
+                    if (method.is_classmethod)
+                        modifiers.push('classmethod');
+                    if (method.is_abstract)
+                        modifiers.push('abstractmethod');
+                    const params = method.parameters.join(', ');
+                    const returns = method.returns ? ` -> ${method.returns}` : '';
+                    return (0, utils_1.createItem)((0, utils_1.generateId)('method', `${model.name}_${method.name}`), `${modifiers.length > 0 ? '@' + modifiers.join(' @') + ' ' : ''}${method.name}(${params})${returns}`, 'method');
+                });
+                sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_methods`), 'Methods', methodItems));
+            }
+            // Add relationships section
+            if (model.relationships && model.relationships.length > 0) {
+                const relationshipItems = model.relationships.map(rel => {
+                    const relName = rel.related_name ? ` (as ${rel.related_name})` : '';
+                    return (0, utils_1.createItem)((0, utils_1.generateId)('rel', `${model.name}_${rel.field_name}`), `${rel.field_name} → ${rel.related_model}${relName} (${rel.type})`, 'relationship', {
+                        type: rel.type,
+                        related_model: rel.related_model,
+                        related_name: rel.related_name
+                    });
+                });
+                sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_relationships`), 'Relationships', relationshipItems));
+            }
+            nodes.push({
+                id: nodeId,
+                title: model.name,
+                type: 'class',
+                sections,
+                metadata: {
+                    module: model.module,
+                    file_path: model.file_path,
+                    meta: model.meta,
+                    bases: model.bases
+                }
+            });
+            // Add edge from module to model
+            const moduleNodeId = nodeMap.get(model.module);
+            if (moduleNodeId) {
+                edges.push({
+                    source: moduleNodeId,
+                    target: nodeId,
+                    type: 'contains',
+                    metadata: {
+                        relationship: 'module_class'
+                    }
+                });
+            }
+        });
+    }
+    // Create inheritance edges
+    if (pythonDependencies.models) {
+        pythonDependencies.models.forEach((model) => {
+            if (!model.bases)
+                return;
+            const sourceNodeId = nodeMap.get(model.name);
+            if (!sourceNodeId)
+                return;
+            model.bases.forEach(base => {
+                const targetNodeId = nodeMap.get(base);
+                if (targetNodeId) {
+                    edges.push({
+                        source: sourceNodeId,
+                        target: targetNodeId,
+                        type: 'inheritance',
+                        metadata: {
+                            relationship: 'extends'
+                        }
+                    });
+                }
+            });
+        });
+    }
+    // Create relationship edges
+    if (pythonDependencies.models) {
+        pythonDependencies.models.forEach((model) => {
+            if (!model.relationships)
+                return;
+            const sourceNodeId = nodeMap.get(model.name);
+            if (!sourceNodeId)
+                return;
+            model.relationships.forEach(rel => {
+                const targetNodeId = nodeMap.get(rel.related_model);
+                if (targetNodeId) {
+                    edges.push({
+                        source: sourceNodeId,
+                        target: targetNodeId,
+                        type: rel.type.toLowerCase(),
+                        metadata: {
+                            field_name: rel.field_name,
+                            related_name: rel.related_name
+                        }
+                    });
+                }
+            });
+        });
+    }
+    return {
+        nodes,
+        edges,
+        metadata: {
+            projectType: 'python',
+            projectName: pythonDependencies.metadata?.projectName || 'Python Project',
+            convertedAt: new Date().toISOString(),
+            originalFormat: pythonDependencies.metadata || {}
+        }
+    };
+}
+function convertDjangoDependencies(djangoDependencies) {
+    const nodes = [];
+    const edges = [];
+    const nodeMap = new Map(); // Maps model/view names to node IDs
+    // Create app nodes
+    djangoDependencies.apps.forEach((app) => {
+        const nodeId = (0, utils_1.generateId)('django_app', app.name);
+        nodeMap.set(`app_${app.name}`, nodeId);
+        nodes.push({
+            id: nodeId,
+            title: app.name,
+            type: 'app',
+            sections: [
+                (0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_info`), 'App Info', [
+                    (0, utils_1.createItem)((0, utils_1.generateId)('path', `${app.name}_path`), `Path: ${app.path}`, 'path'),
+                    (0, utils_1.createItem)((0, utils_1.generateId)('project_app', `${app.name}_project_app`), `Project app: ${app.is_project_app}`, 'info')
+                ])
+            ],
+            metadata: {
+                path: app.path,
+                is_project_app: app.is_project_app,
+                note: app.note
+            }
+        });
+    });
+    // Create model nodes
+    djangoDependencies.models.forEach((model) => {
+        const nodeId = (0, utils_1.generateId)('django_model', `${model.app}_${model.name}`);
+        nodeMap.set(`model_${model.name}`, nodeId);
+        const sections = [];
+        // Create fields section
+        if (model.fields && model.fields.length > 0) {
+            const fieldItems = model.fields.map((field) => {
+                const attributesStr = Object.entries(field.attributes || {})
+                    .map(([key, value]) => `${key}=${JSON.stringify(value)}`)
+                    .join(', ');
+                return (0, utils_1.createItem)((0, utils_1.generateId)('field', `${model.name}_${field.name}`), `${field.name}: ${field.type}${attributesStr ? ` (${attributesStr})` : ''}`, 'field', field.attributes);
+            });
+            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_fields`), 'Fields', fieldItems));
+        }
+        // Create methods section
+        if (model.methods && model.methods.length > 0) {
+            const methodItems = model.methods.map((method) => {
+                return (0, utils_1.createItem)((0, utils_1.generateId)('method', `${model.name}_${method.name}`), `${method.name}(${method.parameters.join(', ')})`, 'method');
+            });
+            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_methods`), 'Methods', methodItems));
+        }
+        // Create relationships section
+        if (model.relationships && model.relationships.length > 0) {
+            const relationshipItems = model.relationships.map((rel) => {
+                const relName = rel.related_name ? ` (as ${rel.related_name})` : '';
+                return (0, utils_1.createItem)((0, utils_1.generateId)('rel', `${model.name}_${rel.field_name}`), `${rel.field_name} → ${rel.related_model}${relName} (${rel.type})`, 'relationship', {
+                    type: rel.type,
+                    related_model: rel.related_model,
+                    related_name: rel.related_name
+                });
+            });
+            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_relationships`), 'Relationships', relationshipItems));
+        }
+        nodes.push({
+            id: nodeId,
+            title: model.name,
+            type: 'model',
+            sections,
+            metadata: {
+                app: model.app,
+                meta: model.meta
+            }
+        });
+        // Add edge from app to model
+        const appNodeId = nodeMap.get(`app_${model.app}`);
+        if (appNodeId) {
+            edges.push({
+                source: appNodeId,
+                target: nodeId,
+                type: 'contains',
+                metadata: {
+                    relationship: 'app_model'
+                }
+            });
+        }
+    });
+    // Create view nodes if they exist
+    if (djangoDependencies.views) {
+        djangoDependencies.views.forEach((view) => {
+            const nodeId = (0, utils_1.generateId)('django_view', `${view.app}_${view.name}`);
+            nodeMap.set(`view_${view.name}`, nodeId);
+            const sections = [];
+            // Create view info section
+            const infoItems = [
+                (0, utils_1.createItem)((0, utils_1.generateId)('type', `${view.name}_type`), `Type: ${view.type}`, 'info')
+            ];
+            if (view.path) {
+                infoItems.push((0, utils_1.createItem)((0, utils_1.generateId)('path', `${view.name}_path`), `Path: ${view.path}`, 'path'));
+            }
+            if (view.http_methods && view.http_methods.length > 0) {
+                infoItems.push((0, utils_1.createItem)((0, utils_1.generateId)('methods', `${view.name}_http_methods`), `HTTP Methods: ${view.http_methods.join(', ')}`, 'method'));
+            }
+            if (view.template) {
+                infoItems.push((0, utils_1.createItem)((0, utils_1.generateId)('template', `${view.name}_template`), `Template: ${view.template}`, 'template'));
+            }
+            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_info`), 'View Info', infoItems));
+            // Add model usages
+            if (view.uses_models && view.uses_models.length > 0) {
+                const modelItems = view.uses_models.map((model) => {
+                    return (0, utils_1.createItem)((0, utils_1.generateId)('uses', `${view.name}_uses_${model}`), model, 'model');
+                });
+                sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_models`), 'Uses Models', modelItems));
+            }
+            nodes.push({
+                id: nodeId,
+                title: view.name,
+                type: 'view',
+                sections,
+                metadata: {
+                    app: view.app,
+                    type: view.type,
+                    path: view.path,
+                    http_methods: view.http_methods,
+                    template: view.template
+                }
+            });
+            // Add edge from app to view
+            const appNodeId = nodeMap.get(`app_${view.app}`);
+            if (appNodeId) {
+                edges.push({
+                    source: appNodeId,
+                    target: nodeId,
+                    type: 'contains',
+                    metadata: {
+                        relationship: 'app_view'
+                    }
+                });
+            }
+            // Add edges from view to models
+            if (view.uses_models) {
+                view.uses_models.forEach((model) => {
+                    const modelNodeId = nodeMap.get(`model_${model}`);
+                    if (modelNodeId) {
+                        edges.push({
+                            source: nodeId,
+                            target: modelNodeId,
+                            type: 'uses',
+                            metadata: {
+                                relationship: 'view_model'
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+    // Create edges for model relationships
+    if (djangoDependencies.models) {
+        djangoDependencies.models.forEach((model) => {
+            if (!model.relationships)
+                return;
+            const sourceNodeId = nodeMap.get(`model_${model.name}`);
+            if (!sourceNodeId)
+                return;
+            model.relationships.forEach((rel) => {
+                const targetNodeId = nodeMap.get(`model_${rel.related_model}`);
+                if (targetNodeId) {
+                    edges.push({
+                        source: sourceNodeId,
+                        target: targetNodeId,
+                        type: rel.type.toLowerCase(),
+                        metadata: {
+                            field_name: rel.field_name,
+                            related_name: rel.related_name
+                        }
+                    });
+                }
+            });
+        });
+    }
+    return {
+        nodes,
+        edges,
+        metadata: {
+            projectType: 'django',
+            projectName: djangoDependencies.metadata?.projectName || 'Django Project',
+            convertedAt: new Date().toISOString(),
+            originalFormat: djangoDependencies.metadata || {}
+        }
+    };
+}
+
+
+/***/ }),
+/* 18 */
+/***/ ((__unused_webpack_module, exports) => {
+
+
+// src/converter/types.ts
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+/* 19 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(20), exports);
+
+
+/***/ }),
+/* 20 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TypeScriptParser = void 0;
+// src/parsers/typescript/typescript-parser.ts
+const vscode = __importStar(__webpack_require__(2));
+const fs = __importStar(__webpack_require__(4));
+const path = __importStar(__webpack_require__(3));
+const cp = __importStar(__webpack_require__(11));
+const base_parser_1 = __webpack_require__(12);
+/**
+ * Parser for TypeScript/JavaScript projects
+ */
+class TypeScriptParser extends base_parser_1.BaseParser {
+    language = 'typescript';
+    /**
+     * Parse the TypeScript project and generate language-specific dependencies
+     * @param projectType Information about the project to parse
+     * @returns A promise that resolves to the TypeScript-specific dependencies
+     */
+    async parseToLanguageSpecific(projectType) {
+        const rootFolder = projectType.rootPath;
+        // Ensure output directory exists
+        const outputDir = path.join(rootFolder, '.vscode');
+        if (!fs.existsSync(outputDir)) {
+            fs.mkdirSync(outputDir, { recursive: true });
+        }
+        const outputFilePath = path.join(outputDir, 'language-dependencies.json');
+        // Delete existing output file if it exists
+        if (fs.existsSync(outputFilePath)) {
+            fs.unlinkSync(outputFilePath);
+        }
+        // Path to the TypeScript parser script (shipped with the extension)
+        const tsParserPath = this.getTypeScriptParserPath();
+        // Determine Node.js executable
+        const nodePath = await this.getNodePath();
+        // Build command to run the TypeScript parser
+        const command = `"${nodePath}" "${tsParserPath}" --input "${rootFolder}" --output "${outputFilePath}"`;
+        // Show progress notification
+        vscode.window.showInformationMessage(`Analyzing TypeScript/JavaScript project in ${rootFolder}...`);
+        // Run TypeScript parser
+        await this.executeCommand(command, outputDir);
+        // Check if output file was generated
+        if (!fs.existsSync(outputFilePath)) {
+            throw new Error('Failed to generate TypeScript dependencies');
+        }
+        // Parse the output file
+        const tsOutputJson = JSON.parse(fs.readFileSync(outputFilePath, 'utf-8'));
+        // Return the TypeScript-specific dependencies
+        return tsOutputJson;
+    }
+    /**
+     * Get the path to the TypeScript parser script
+     * @returns The path to the TypeScript parser script
+     */
+    getTypeScriptParserPath() {
+        // The extension context provides the path to the extension's installation directory
+        const extensionPath = vscode.extensions.getExtension('Optivance.dependency-analytics-tool')?.extensionPath;
+        if (!extensionPath) {
+            throw new Error('Could not determine extension path');
+        }
+        // The TypeScript parser script is in the extension's resources/parsers/typescript directory
+        const tsParserPath = path.join(extensionPath, 'resources', 'parsers', 'typescript', 'cli.js');
+        // Verify that the parser exists
+        if (!fs.existsSync(tsParserPath)) {
+            throw new Error(`TypeScript parser not found at ${tsParserPath}`);
+        }
+        return tsParserPath;
+    }
+    /**
+     * Get the Node.js executable path
+     * @returns A promise that resolves to the Node.js executable path
+     */
+    async getNodePath() {
+        // Try to get from settings first
+        const config = vscode.workspace.getConfiguration('dependencyAnalytics');
+        const nodePath = config.get('nodePath');
+        if (nodePath) {
+            return nodePath;
+        }
+        // Fall back to 'node' on PATH
+        return 'node';
+    }
+    /**
+     * Execute a command as a Promise
+     * @param command The command to execute
+     * @param cwd The working directory for the command
+     * @returns A promise that resolves when the command completes
+     */
+    executeCommand(command, cwd) {
+        return new Promise((resolve, reject) => {
+            cp.exec(command, { cwd }, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`Command execution error: ${error.message}`);
+                    reject(error);
+                    return;
+                }
+                if (stderr) {
+                    console.warn(`Command stderr: ${stderr}`);
+                }
+                console.log(`Command stdout: ${stdout}`);
+                resolve();
+            });
+        });
+    }
+}
+exports.TypeScriptParser = TypeScriptParser;
+
+
+/***/ }),
+/* 21 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -1012,7 +2162,7 @@ class DependencyTreeItem extends vscode.TreeItem {
                 iconName = 'default';
         }
         // Get the extension path using VS Code API
-        const extensionPath = vscode.extensions.getExtension('your-publisher-name.dependency-analytics')?.extensionPath || '';
+        const extensionPath = vscode.extensions.getExtension('Optivance.dependency-analytics-tool')?.extensionPath || '';
         return {
             light: vscode.Uri.file(path.join(extensionPath, 'resources', 'icons', 'light', `${iconName}.svg`)),
             dark: vscode.Uri.file(path.join(extensionPath, 'resources', 'icons', 'dark', `${iconName}.svg`))
@@ -1023,7 +2173,7 @@ exports.DependencyTreeItem = DependencyTreeItem;
 
 
 /***/ }),
-/* 15 */
+/* 22 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -1200,240 +2350,13 @@ class ItemTreeItem extends BaseStructureTreeItem {
 
 
 /***/ }),
-/* 16 */,
-/* 17 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.DiagramGenerator = void 0;
-const vscode = __importStar(__webpack_require__(2));
-const fs = __importStar(__webpack_require__(4));
-const path = __importStar(__webpack_require__(3));
-/**
- * Base class for diagram generators
- */
-class DiagramGenerator {
-    /**
-     * Display the generated diagram in a webview panel
-     * @param context The extension context
-     * @param classItem The class to show the diagram for
-     * @param allClasses All classes in the project
-     * @param diagramFormat The format of the diagram (e.g., 'mermaid')
-     */
-    async showDiagram(context, classItem, allClasses, diagramFormat = 'mermaid') {
-        // Create a webview panel
-        const panel = vscode.window.createWebviewPanel('classDiagram', `Class Diagram: ${classItem.name.split('.').pop()}`, vscode.ViewColumn.One, {
-            enableScripts: true,
-            localResourceRoots: [
-                vscode.Uri.file(path.join(context.extensionPath, 'media'))
-            ]
-        });
-        // Generate the diagram
-        const diagram = this.generateDiagram(classItem, allClasses);
-        // Read HTML template
-        let htmlPath = path.join(context.extensionPath, 'media', 'html', 'webview.html');
-        // Check if the webview.html file exists
-        if (!fs.existsSync(htmlPath)) {
-            // Try alternate locations
-            const altPath = path.join(context.extensionPath, 'resources', 'templates', 'diagram.html');
-            if (fs.existsSync(altPath)) {
-                htmlPath = altPath;
-            }
-        }
-        // If the template exists, use it
-        let htmlContent;
-        if (fs.existsSync(htmlPath)) {
-            htmlContent = fs.readFileSync(htmlPath, 'utf8');
-            // Replace diagram placeholder with actual diagram
-            htmlContent = htmlContent.replace('DIAGRAM_PLACEHOLDER', diagram);
-        }
-        else {
-            // Create a basic HTML template if the file doesn't exist
-            htmlContent = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Class Diagram</title>
-                    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.0.0/dist/mermaid.min.js"></script>
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            margin: 0;
-                            padding: 20px;
-                        }
-                        .diagram-container {
-                            overflow: auto;
-                        }
-                        #zoom-controls {
-                            position: fixed;
-                            bottom: 20px;
-                            right: 20px;
-                            background: rgba(255, 255, 255, 0.9);
-                            padding: 10px;
-                            border-radius: 5px;
-                            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                            z-index: 1000;
-                            display: flex;
-                            gap: 10px;
-                        }
-                        button {
-                            padding: 5px 10px;
-                            cursor: pointer;
-                            background: #f0f0f0;
-                            border: 1px solid #ccc;
-                            border-radius: 3px;
-                        }
-                        button:hover {
-                            background: #e0e0e0;
-                        }
-                        .zoom-level {
-                            display: inline-block;
-                            min-width: 60px;
-                            text-align: center;
-                            line-height: 28px;
-                        }
-                        #scroll-container {
-                            width: 100%;
-                            height: 100vh;
-                            overflow: auto;
-                            position: relative;
-                        }
-                        #content {
-                            padding: 20px;
-                            transform-origin: 0 0;
-                            transition: transform 0.2s ease-out;
-                            min-width: fit-content;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div id="scroll-container">
-                        <div id="content">
-                            <pre class="mermaid">
-${diagram}
-                            </pre>
-                        </div>
-                    </div>
-                    
-                    <div id="zoom-controls">
-                        <button onclick="zoomOut()">−</button>
-                        <span class="zoom-level">100%</span>
-                        <button onclick="zoomIn()">+</button>
-                        <button onclick="resetZoom()">Reset</button>
-                    </div>
-                    
-                    <script>
-                        // Initialize Mermaid
-                        mermaid.initialize({
-                            startOnLoad: true,
-                            theme: 'default',
-                            securityLevel: 'loose',
-                            classDiagram: {
-                                useMaxWidth: false,
-                                wrap: false
-                            }
-                        });
-                        
-                        // Zoom functionality
-                        let zoomScale = 1;
-                        const content = document.getElementById('content');
-                        const zoomLevel = document.querySelector('.zoom-level');
-                        const MIN_ZOOM = 0.5;
-                        const MAX_ZOOM = 3;
-                        const ZOOM_STEP = 0.1;
-                        
-                        function updateZoom() {
-                            content.style.transform = \`scale(\${zoomScale})\`;
-                            zoomLevel.textContent = \`\${Math.round(zoomScale * 100)}%\`;
-                        }
-                        
-                        function zoomIn() {
-                            if (zoomScale < MAX_ZOOM) {
-                                zoomScale = Math.min(MAX_ZOOM, zoomScale + ZOOM_STEP);
-                                updateZoom();
-                            }
-                        }
-                        
-                        function zoomOut() {
-                            if (zoomScale > MIN_ZOOM) {
-                                zoomScale = Math.max(MIN_ZOOM, zoomScale - ZOOM_STEP);
-                                updateZoom();
-                            }
-                        }
-                        
-                        function resetZoom() {
-                            zoomScale = 1;
-                            updateZoom();
-                        }
-                        
-                        // Mouse wheel zoom
-                        window.addEventListener('wheel', function(event) {
-                            if (event.ctrlKey || event.metaKey) {
-                                event.preventDefault();
-                                
-                                if (event.deltaY < 0) {
-                                    zoomIn();
-                                } else {
-                                    zoomOut();
-                                }
-                            }
-                        }, { passive: false });
-                    </script>
-                </body>
-                </html>
-            `;
-        }
-        // Set the HTML content
-        panel.webview.html = htmlContent;
-    }
-}
-exports.DiagramGenerator = DiagramGenerator;
-
-
-/***/ }),
-/* 18 */
+/* 23 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.MermaidGenerator = void 0;
-const graph_generator_1 = __webpack_require__(17);
+const graph_generator_1 = __webpack_require__(24);
 /**
  * Generates class diagrams using Mermaid syntax from the standard format
  */
@@ -1765,7 +2688,338 @@ exports["default"] = MermaidGenerator;
 
 
 /***/ }),
-/* 19 */
+/* 24 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DiagramGenerator = void 0;
+// src/views/diagram/graph-generator.ts
+const vscode = __importStar(__webpack_require__(2));
+const fs = __importStar(__webpack_require__(4));
+const path = __importStar(__webpack_require__(3));
+/**
+ * Base class for diagram generators
+ */
+class DiagramGenerator {
+    /**
+     * Display the generated diagram in a webview panel
+     * @param context The extension context
+     * @param targetNode The node to show the diagram for
+     * @param allNodes All nodes in the project
+     * @param diagramFormat The format of the diagram (e.g., 'mermaid')
+     */
+    async showDiagram(context, targetNode, allNodes, diagramFormat = 'mermaid') {
+        // Create a webview panel
+        const panel = vscode.window.createWebviewPanel('dependencyDiagram', ` Diagram: ${targetNode.title}`, vscode.ViewColumn.One, {
+            enableScripts: true,
+            localResourceRoots: [
+                vscode.Uri.file(path.join(context.extensionPath, 'media'))
+            ]
+        });
+        // Generate the diagram
+        const diagram = this.generateDiagram(targetNode, allNodes);
+        // Read HTML template
+        let htmlPath = path.join(context.extensionPath, 'media', 'html', 'webview.html');
+        // Check if the webview.html file exists
+        if (!fs.existsSync(htmlPath)) {
+            // Try alternate locations
+            const altPath = path.join(context.extensionPath, 'resources', 'templates', 'diagram.html');
+            if (fs.existsSync(altPath)) {
+                htmlPath = altPath;
+            }
+        }
+        // If the template exists, use it
+        let htmlContent;
+        if (fs.existsSync(htmlPath)) {
+            htmlContent = fs.readFileSync(htmlPath, 'utf8');
+            // Replace diagram placeholder with actual diagram
+            htmlContent = htmlContent.replace('DIAGRAM_PLACEHOLDER', diagram);
+        }
+        else {
+            // Create a basic HTML template if the file doesn't exist
+            htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Dependency Diagram</title>
+                    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.0.0/dist/mermaid.min.js"></script>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 0;
+                            padding: 20px;
+                        }
+                        .diagram-container {
+                            overflow: auto;
+                        }
+                        #zoom-controls {
+                            position: fixed;
+                            bottom: 20px;
+                            right: 20px;
+                            background: rgba(255, 255, 255, 0.9);
+                            padding: 10px;
+                            border-radius: 5px;
+                            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                            z-index: 1000;
+                            display: flex;
+                            gap: 10px;
+                        }
+                        button {
+                            padding: 5px 10px;
+                            cursor: pointer;
+                            background: #f0f0f0;
+                            border: 1px solid #ccc;
+                            border-radius: 3px;
+                        }
+                        button:hover {
+                            background: #e0e0e0;
+                        }
+                        .zoom-level {
+                            display: inline-block;
+                            min-width: 60px;
+                            text-align: center;
+                            line-height: 28px;
+                        }
+                        #scroll-container {
+                            width: 100%;
+                            height: 100vh;
+                            overflow: auto;
+                            position: relative;
+                        }
+                        #content {
+                            padding: 20px;
+                            transform-origin: 0 0;
+                            transition: transform 0.2s ease-out;
+                            min-width: fit-content;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div id="scroll-container">
+                        <div id="content">
+                            <pre class="mermaid">
+${diagram}
+                            </pre>
+                        </div>
+                    </div>
+                    
+                    <div id="zoom-controls">
+                        <button onclick="zoomOut()">−</button>
+                        <span class="zoom-level">100%</span>
+                        <button onclick="zoomIn()">+</button>
+                        <button onclick="resetZoom()">Reset</button>
+                    </div>
+                    
+                    <script>
+                        // Initialize Mermaid
+                        mermaid.initialize({
+                            startOnLoad: true,
+                            theme: 'default',
+                            securityLevel: 'loose',
+                            classDiagram: {
+                                useMaxWidth: false,
+                                wrap: false
+                            }
+                        });
+                        
+                        // Zoom functionality
+                        let zoomScale = 1;
+                        const content = document.getElementById('content');
+                        const zoomLevel = document.querySelector('.zoom-level');
+                        const MIN_ZOOM = 0.5;
+                        const MAX_ZOOM = 3;
+                        const ZOOM_STEP = 0.1;
+                        
+                        function updateZoom() {
+                            content.style.transform = \`scale(\${zoomScale})\`;
+                            zoomLevel.textContent = \`\${Math.round(zoomScale * 100)}%\`;
+                        }
+                        
+                        function zoomIn() {
+                            if (zoomScale < MAX_ZOOM) {
+                                zoomScale = Math.min(MAX_ZOOM, zoomScale + ZOOM_STEP);
+                                updateZoom();
+                            }
+                        }
+                        
+                        function zoomOut() {
+                            if (zoomScale > MIN_ZOOM) {
+                                zoomScale = Math.max(MIN_ZOOM, zoomScale - ZOOM_STEP);
+                                updateZoom();
+                            }
+                        }
+                        
+                        function resetZoom() {
+                            zoomScale = 1;
+                            updateZoom();
+                        }
+                        
+                        // Mouse wheel zoom
+                        window.addEventListener('wheel', function(event) {
+                            if (event.ctrlKey || event.metaKey) {
+                                event.preventDefault();
+                                
+                                if (event.deltaY < 0) {
+                                    zoomIn();
+                                } else {
+                                    zoomOut();
+                                }
+                            }
+                        }, { passive: false });
+                        
+                        // Track scroll position relative to zoom origin
+                        let lastScrollX = 0;
+                        let lastScrollY = 0;
+                        const scrollContainer = document.getElementById('scroll-container');
+                        
+                        scrollContainer.addEventListener('scroll', function() {
+                            lastScrollX = this.scrollLeft;
+                            lastScrollY = this.scrollTop;
+                        });
+                        
+                        // Keyboard shortcuts for zoom
+                        document.addEventListener('keydown', function(event) {
+                            if (event.ctrlKey || event.metaKey) {
+                                if (event.key === '=' || event.key === '+') {
+                                    event.preventDefault();
+                                    zoomIn();
+                                } else if (event.key === '-') {
+                                    event.preventDefault();
+                                    zoomOut();
+                                } else if (event.key === '0') {
+                                    event.preventDefault();
+                                    resetZoom();
+                                }
+                            }
+                        });
+                        
+                        // Initial render
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Force re-render after a short delay to ensure proper layout
+                            setTimeout(function() {
+                                mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+                            }, 200);
+                        });
+                    </script>
+                </body>
+                </html>
+            `;
+        }
+        // Set the HTML content
+        panel.webview.html = htmlContent;
+    }
+    /**
+     * Utility to safely convert node names for diagrams
+     * @param name The name to convert
+     * @returns A safe version of the name
+     */
+    safeName(name) {
+        if (!name)
+            return 'Unknown';
+        return name.replace(/[^\w\s]/g, '_');
+    }
+    /**
+     * Extract the simple name from a fully qualified name
+     * @param fullName The fully qualified name
+     * @returns The simple name
+     */
+    getSimpleName(fullName) {
+        if (!fullName)
+            return '';
+        const parts = fullName.split('.');
+        return parts[parts.length - 1];
+    }
+    /**
+     * Get color for a node type
+     * @param nodeType The node type
+     * @returns A color hex code
+     */
+    getColorForType(nodeType) {
+        switch (nodeType.toLowerCase()) {
+            case 'class':
+                return '#4285F4'; // Blue
+            case 'interface':
+                return '#34A853'; // Green
+            case 'package':
+            case 'module':
+                return '#FBBC05'; // Yellow
+            case 'component':
+                return '#EA4335'; // Red
+            case 'model':
+                return '#9C27B0'; // Purple
+            case 'view':
+                return '#00ACC1'; // Cyan
+            default:
+                return '#757575'; // Gray
+        }
+    }
+    /**
+     * Format a relationship type for display
+     * @param relationType The relationship type
+     * @returns A formatted description
+     */
+    formatRelationship(relationType) {
+        switch (relationType.toLowerCase()) {
+            case 'inheritance':
+            case 'extends':
+                return 'extends';
+            case 'implementation':
+            case 'implements':
+                return 'implements';
+            case 'dependency':
+                return 'uses';
+            case 'contains':
+                return 'contains';
+            case 'renders':
+                return 'renders';
+            default:
+                return relationType;
+        }
+    }
+}
+exports.DiagramGenerator = DiagramGenerator;
+// Export the DiagramGenerator
+exports["default"] = DiagramGenerator;
+
+
+/***/ }),
+/* 25 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -1784,12 +3038,12 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__webpack_require__(20), exports);
-__exportStar(__webpack_require__(21), exports);
+__exportStar(__webpack_require__(26), exports);
+__exportStar(__webpack_require__(27), exports);
 
 
 /***/ }),
-/* 20 */
+/* 26 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -1879,7 +3133,7 @@ exports.CommandUtils = CommandUtils;
 
 
 /***/ }),
-/* 21 */
+/* 27 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -1988,636 +3242,30 @@ exports.FileUtils = FileUtils;
 
 
 /***/ }),
-/* 22 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.detectDependencyType = detectDependencyType;
-exports.convertDependencies = convertDependencies;
-const java_converter_1 = __webpack_require__(23);
-const typescript_converter_1 = __webpack_require__(25);
-/**
- * Detect the type of dependency data based on file content
- */
-function detectDependencyType(data) {
-    // Check for React TypeScript component-based dependencies (new format)
-    if (!Array.isArray(data) && data.components && typeof data.components === 'object') {
-        return 'typescript';
-    }
-    // Check for TypeScript dependencies (legacy format)
-    if (Array.isArray(data) && data.length > 0 && data[0].fileName && data[0].exports) {
-        return 'typescript';
-    }
-    // Check for Java dependencies
-    if (!Array.isArray(data) && data.name && data.elements) {
-        return 'java';
-    }
-    // Check for Python dependencies
-    if (!Array.isArray(data) && data.metadata && data.apps && data.models) {
-        return 'python';
-    }
-    // Will add more format detection as needed
-    return 'unknown';
-}
-/**
- * Convert dependencies to standardized format
- */
-function convertDependencies(data) {
-    const type = detectDependencyType(data);
-    switch (type) {
-        case 'typescript':
-            return (0, typescript_converter_1.convertTypeScriptDependencies)(data);
-        case 'java':
-            return (0, java_converter_1.convertJavaDependencies)(data);
-        case 'python':
-        default:
-            throw new Error(`Unknown dependency data format`);
-    }
-}
-// Export types
-__exportStar(__webpack_require__(26), exports);
-
-
-/***/ }),
-/* 23 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-// src/converter/java-converter.ts
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.convertJavaDependencies = convertJavaDependencies;
-const utils_1 = __webpack_require__(24);
-function convertJavaDependencies(javaDependencies) {
-    const nodes = [];
-    const edges = [];
-    const nodeMap = new Map();
-    // Process the Java package structure
-    processJavaPackage(javaDependencies, nodes, nodeMap);
-    // Create edges based on node relationships
-    createJavaEdges(nodes, edges, nodeMap);
-    return {
-        nodes,
-        edges,
-        metadata: {
-            projectType: 'java',
-            projectName: javaDependencies.name || 'Java Project',
-            convertedAt: new Date().toISOString(),
-            originalFormat: {}
-        }
-    };
-}
-function processJavaPackage(javaPackage, nodes, nodeMap) {
-    if (!javaPackage.elements) {
-        return;
-    }
-    // Process all elements in the package
-    javaPackage.elements.forEach(element => {
-        if (element.class) {
-            // This is a class
-            const javaClass = element;
-            createJavaClassNode(javaClass, nodes, nodeMap);
-        }
-        else if (element.package) {
-            // This is a package, process it recursively
-            processJavaPackage(element, nodes, nodeMap);
-        }
-    });
-}
-function createJavaClassNode(javaClass, nodes, nodeMap) {
-    const nodeId = (0, utils_1.generateId)('java', javaClass.name);
-    nodeMap.set(javaClass.name, nodeId);
-    const sections = [];
-    // Create class section with basic information
-    const classInfoItems = [];
-    // Add inheritance info
-    if (javaClass.superClassName && javaClass.superClassName !== 'java.lang.Object') {
-        classInfoItems.push((0, utils_1.createItem)((0, utils_1.generateId)('extends', `${javaClass.name}_extends`), `extends ${(0, utils_1.getSimpleName)(javaClass.superClassName)}`, 'inheritance'));
-    }
-    // Add interfaces
-    if (javaClass.interfaces && javaClass.interfaces.length > 0) {
-        const interfaces = javaClass.interfaces.map(utils_1.getSimpleName).join(', ');
-        classInfoItems.push((0, utils_1.createItem)((0, utils_1.generateId)('implements', `${javaClass.name}_implements`), `implements ${interfaces}`, 'interface'));
-    }
-    if (classInfoItems.length > 0) {
-        sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_info`), 'Class Info', classInfoItems));
-    }
-    // Create fields section
-    if (javaClass.fields && javaClass.fields.length > 0) {
-        const fieldItems = javaClass.fields.map(field => {
-            const modifiers = [];
-            if (field.modifier) {
-                modifiers.push(field.modifier.toLowerCase());
-            }
-            if (field.static) {
-                modifiers.push('static');
-            }
-            if (field.final) {
-                modifiers.push('final');
-            }
-            return (0, utils_1.createItem)((0, utils_1.generateId)('field', `${javaClass.name}_${field.name}`), `${modifiers.join(' ')} ${(0, utils_1.getSimpleName)(field.type)} ${field.name}`, 'field', { type: field.type });
-        });
-        sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_fields`), 'Fields', fieldItems));
-    }
-    // Create methods section
-    if (javaClass.methods && javaClass.methods.length > 0) {
-        const methodItems = javaClass.methods.map(method => {
-            const modifiers = [];
-            if (method.accessModifier) {
-                modifiers.push(method.accessModifier.toLowerCase());
-            }
-            if (method.static) {
-                modifiers.push('static');
-            }
-            if (method.final) {
-                modifiers.push('final');
-            }
-            if (method.abstract) {
-                modifiers.push('abstract');
-            }
-            // For constructors, display name differently
-            const isConstructor = method.name === '<init>';
-            const displayName = isConstructor ? (0, utils_1.getSimpleName)(javaClass.name) : method.name;
-            // Simplify parameter types to just the class name, not the full package
-            const params = method.parameters.map(utils_1.getSimpleName).join(', ');
-            // Display return type for non-constructors
-            const returnTypeStr = isConstructor ? '' : `: ${(0, utils_1.getSimpleName)(method.returnType)}`;
-            return (0, utils_1.createItem)((0, utils_1.generateId)('method', `${javaClass.name}_${method.name}`), `${modifiers.join(' ')} ${displayName}(${params})${returnTypeStr}`, isConstructor ? 'constructor' : 'method', {
-                returnType: method.returnType,
-                isConstructor
-            });
-        });
-        sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_methods`), 'Methods', methodItems));
-    }
-    // Create imports section if available
-    if (javaClass.importedPackages && javaClass.importedPackages.length > 0) {
-        const importItems = javaClass.importedPackages.map(pkg => {
-            return (0, utils_1.createItem)((0, utils_1.generateId)('import', `${javaClass.name}_${pkg.name}`), pkg.name, 'package');
-        });
-        sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_imports`), 'Imports', importItems));
-    }
-    // Create the node
-    nodes.push({
-        id: nodeId,
-        title: (0, utils_1.getSimpleName)(javaClass.name),
-        type: javaClass.interface ? 'interface' : 'class',
-        sections,
-        metadata: {
-            fullName: javaClass.name,
-            packageName: javaClass.packageName,
-            sourceFile: javaClass.sourceFile,
-            isAbstract: javaClass.abstract,
-            isFinal: javaClass.final,
-            superClassName: javaClass.superClassName,
-            interfaces: javaClass.interfaces,
-            outGoingDependencies: javaClass.outGoingDependencies,
-            incomingDependencies: javaClass.incomingDependencies
-        }
-    });
-}
-function createJavaEdges(nodes, edges, nodeMap) {
-    nodes.forEach(node => {
-        const metadata = node.metadata;
-        // Skip if no metadata or not a class
-        if (!metadata || (node.type !== 'class' && node.type !== 'interface')) {
-            return;
-        }
-        // Create inheritance edge if there's a superclass
-        if (metadata.fullName && metadata.superClassName &&
-            metadata.superClassName !== 'java.lang.Object') {
-            const targetNodeId = nodeMap.get(metadata.superClassName);
-            if (targetNodeId) {
-                edges.push({
-                    source: node.id,
-                    target: targetNodeId,
-                    type: 'inheritance',
-                    metadata: {
-                        relationship: 'extends'
-                    }
-                });
-            }
-        }
-        // Create interface implementation edges
-        if (metadata.interfaces) {
-            metadata.interfaces.forEach((interfaceName) => {
-                const targetNodeId = nodeMap.get(interfaceName);
-                if (targetNodeId) {
-                    edges.push({
-                        source: node.id,
-                        target: targetNodeId,
-                        type: 'implementation',
-                        metadata: {
-                            relationship: 'implements'
-                        }
-                    });
-                }
-            });
-        }
-        // Create dependency edges
-        if (metadata.outGoingDependencies) {
-            metadata.outGoingDependencies.forEach((dependency) => {
-                const targetNodeId = nodeMap.get(dependency);
-                if (targetNodeId) {
-                    edges.push({
-                        source: node.id,
-                        target: targetNodeId,
-                        type: 'dependency',
-                        metadata: {
-                            direction: 'outgoing'
-                        }
-                    });
-                }
-            });
-        }
-    });
-}
-
-
-/***/ }),
-/* 24 */
-/***/ ((__unused_webpack_module, exports) => {
-
-
-// src/converter/utils.ts
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.generateId = generateId;
-exports.getSimpleName = getSimpleName;
-exports.createSection = createSection;
-exports.createItem = createItem;
-exports.determineNodeType = determineNodeType;
-/**
- * Generates a unique ID for a node or edge
- */
-function generateId(prefix, name) {
-    return `${prefix}_${name.replace(/[^a-zA-Z0-9]/g, '_')}`;
-}
-/**
- * Extracts the simple name from a fully qualified Java class name
- * e.g., com.sample.book.Book -> Book
- */
-function getSimpleName(fullyQualifiedName) {
-    if (!fullyQualifiedName) {
-        return '';
-    }
-    const parts = fullyQualifiedName.split('.');
-    return parts[parts.length - 1];
-}
-/**
- * Creates a section with items
- */
-function createSection(id, name, items, metadata) {
-    return {
-        id,
-        name,
-        items,
-        metadata
-    };
-}
-/**
- * Creates an item for a section
- */
-function createItem(id, value, icon, metadata) {
-    return {
-        id,
-        value,
-        icon,
-        metadata
-    };
-}
-/**
- * Determines the type of import/dependency based on the name pattern
- */
-function determineNodeType(name, additionalInfo) {
-    if (additionalInfo?.class === true || additionalInfo?.isClass === true) {
-        return additionalInfo.interface || additionalInfo.isInterface ? 'interface' : 'class';
-    }
-    if (additionalInfo?.type === 'function' || name.includes('()') || name.endsWith(')')) {
-        return 'function';
-    }
-    if (additionalInfo?.type === 'model') {
-        return 'model';
-    }
-    if (additionalInfo?.type === 'view') {
-        return 'view';
-    }
-    if (name.endsWith('.ts') || name.endsWith('.js') || name.endsWith('.jsx') || name.endsWith('.tsx')) {
-        return 'file';
-    }
-    // Default to module if we can't determine more specific type
-    return 'module';
-}
-
-
-/***/ }),
-/* 25 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-// src/converter/typescript-converter.ts
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.convertTypeScriptDependencies = convertTypeScriptDependencies;
-const utils_1 = __webpack_require__(24);
-// Helper to format function parameters
-function formatParams(params = []) {
-    if (!params || params.length === 0) {
-        return '()';
-    }
-    return `(${params.map((p) => p.name).join(', ')})`;
-}
-// Check if the input data is in the component-based format
-function isComponentBasedFormat(data) {
-    return !Array.isArray(data) && data.components !== undefined;
-}
-// Convert TypeScript dependencies to standardized format
-function convertTypeScriptDependencies(typescriptData) {
-    // Detect data format and use appropriate converter
-    if (isComponentBasedFormat(typescriptData)) {
-        return convertComponentBasedTypeScript(typescriptData);
-    }
-    else {
-        // Legacy format handling
-        return convertLegacyTypeScriptDependencies(typescriptData);
-    }
-}
-// Convert component-based TypeScript format
-function convertComponentBasedTypeScript(data) {
-    const nodes = [];
-    const edges = [];
-    const nodeMap = new Map(); // Maps component names to node IDs
-    const filePathMap = new Map(); // Maps file paths to node IDs
-    // Create nodes for each component
-    Object.values(data.components).forEach(component => {
-        const nodeId = (0, utils_1.generateId)('comp', component.name);
-        nodeMap.set(component.name, nodeId);
-        filePathMap.set(component.filePath, nodeId);
-        const sections = [];
-        // Create props section if available
-        if (component.props && component.props.length > 0) {
-            const propItems = component.props.map((prop) => {
-                const required = prop.required ? ' (required)' : '';
-                const type = prop.type ? `: ${prop.type}` : '';
-                return (0, utils_1.createItem)((0, utils_1.generateId)('prop', `${component.name}_${prop.name}`), `${prop.name}${type}${required}`, 'prop');
-            });
-            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_props`), 'Props', propItems));
-        }
-        // Create state section if available
-        if (component.state && component.state.length > 0) {
-            const stateItems = component.state.map((state) => {
-                const type = state.type ? `: ${state.type}` : '';
-                const initialValue = state.initialValue ? ` = ${state.initialValue}` : '';
-                return (0, utils_1.createItem)((0, utils_1.generateId)('state', `${component.name}_${state.name}`), `${state.name}${type}${initialValue}`, 'state');
-            });
-            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_state`), 'State', stateItems));
-        }
-        // Create hooks section if available
-        if (component.hooks && component.hooks.length > 0) {
-            const hookItems = component.hooks.map((hook) => {
-                const custom = hook.customHook ? ' (custom)' : '';
-                return (0, utils_1.createItem)((0, utils_1.generateId)('hook', `${component.name}_${hook.type}`), `${hook.type}${custom}`, 'hook');
-            });
-            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_hooks`), 'Hooks', hookItems));
-        }
-        // Create dependencies section if available
-        if (component.dependencies && component.dependencies.length > 0) {
-            const dependencyItems = component.dependencies.map((dep) => {
-                const external = dep.isExternal ? ' (external)' : '';
-                return (0, utils_1.createItem)((0, utils_1.generateId)('dep', `${component.name}_${dep.name}`), `${dep.name} from '${dep.path}'${external}`, 'dependency');
-            });
-            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_dependencies`), 'Dependencies', dependencyItems));
-        }
-        // Create children section if available
-        if (component.children && component.children.length > 0) {
-            const childrenItems = component.children.map((child) => {
-                return (0, utils_1.createItem)((0, utils_1.generateId)('child', `${component.name}_${child}`), child, 'component');
-            });
-            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_children`), 'Children', childrenItems));
-        }
-        nodes.push({
-            id: nodeId,
-            title: component.name,
-            type: 'component',
-            sections,
-            metadata: {
-                filePath: component.filePath,
-                name: component.name
-            }
-        });
-    });
-    // Create edges for component dependencies
-    Object.values(data.components).forEach(component => {
-        const sourceNodeId = nodeMap.get(component.name);
-        if (!sourceNodeId) {
-            return;
-        }
-        // Create edges for component dependencies
-        if (component.dependencies) {
-            component.dependencies.forEach((dep) => {
-                const targetNodeId = nodeMap.get(dep.name);
-                if (targetNodeId) {
-                    edges.push({
-                        source: sourceNodeId,
-                        target: targetNodeId,
-                        type: 'dependency',
-                        metadata: {
-                            path: dep.path,
-                            isExternal: dep.isExternal
-                        }
-                    });
-                }
-            });
-        }
-        // Create edges for component children
-        if (component.children) {
-            component.children.forEach((child) => {
-                const targetNodeId = nodeMap.get(child);
-                if (targetNodeId) {
-                    edges.push({
-                        source: sourceNodeId,
-                        target: targetNodeId,
-                        type: 'renders',
-                        metadata: {
-                            relationship: 'parent-child'
-                        }
-                    });
-                }
-            });
-        }
-    });
-    return {
-        nodes,
-        edges,
-        metadata: {
-            projectType: 'typescript',
-            projectName: 'React TypeScript Project',
-            convertedAt: new Date().toISOString(),
-            originalFormat: {}
-        }
-    };
-}
-// Legacy TypeScript converter
-function convertLegacyTypeScriptDependencies(dependencies) {
-    const nodes = [];
-    const edges = [];
-    const nodeMap = new Map(); // Maps file paths to node IDs
-    // First pass: create nodes and build id map
-    dependencies.forEach(dependency => {
-        const nodeId = (0, utils_1.generateId)('ts', dependency.filePath);
-        nodeMap.set(dependency.filePath, nodeId);
-        const sections = [];
-        // Create imports section if available
-        if (dependency.imports && dependency.imports.length > 0) {
-            const importItems = dependency.imports.map((imp) => {
-                const value = imp.namedImports && imp.namedImports.length > 0
-                    ? `{ ${imp.namedImports.join(', ')} } from '${imp.path}'`
-                    : imp.defaultImport
-                        ? `${imp.defaultImport} from '${imp.path}'`
-                        : `import '${imp.path}'`;
-                return (0, utils_1.createItem)((0, utils_1.generateId)('imp', `${dependency.filePath}_${imp.path}`), value, 'import', {
-                    path: imp.path,
-                    isTypeOnly: imp.isTypeOnly,
-                    resolvedFilePath: imp.resolvedFilePath
-                });
-            });
-            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_imports`), 'Imports', importItems));
-        }
-        // Create exports section if available
-        const exportItems = [];
-        // Add exported functions
-        if (dependency.exports && dependency.exports.functions && dependency.exports.functions.length > 0) {
-            dependency.exports.functions.forEach((func) => {
-                if (func.isExported) {
-                    exportItems.push((0, utils_1.createItem)((0, utils_1.generateId)('func', `${dependency.filePath}_${func.name}`), `${func.name}${formatParams(func.params)}: ${func.returnType || 'void'}`, 'function', { isExported: true }));
-                }
-            });
-        }
-        // Add exported components
-        if (dependency.exports && dependency.exports.components && dependency.exports.components.length > 0) {
-            dependency.exports.components.forEach((comp) => {
-                exportItems.push((0, utils_1.createItem)((0, utils_1.generateId)('comp', `${dependency.filePath}_${comp.name}`), `${comp.name}: ${comp.type || 'Component'}`, 'component', { isExported: true }));
-            });
-        }
-        // Add exported types/interfaces
-        if (dependency.exports && dependency.exports.interfaces && dependency.exports.interfaces.length > 0) {
-            dependency.exports.interfaces.forEach((intf) => {
-                exportItems.push((0, utils_1.createItem)((0, utils_1.generateId)('intf', `${dependency.filePath}_${intf.name}`), `${intf.name}`, 'interface', { isExported: true }));
-            });
-        }
-        if (exportItems.length > 0) {
-            sections.push((0, utils_1.createSection)((0, utils_1.generateId)('sec', `${nodeId}_exports`), 'Exports', exportItems));
-        }
-        nodes.push({
-            id: nodeId,
-            title: dependency.fileName,
-            type: 'file',
-            sections,
-            metadata: {
-                filePath: dependency.filePath,
-                fileName: dependency.fileName,
-                outgoingDependencies: dependency.outgoingDependencies,
-                incomingDependencies: dependency.incomingDependencies
-            }
-        });
-    });
-    // Second pass: create edges
-    dependencies.forEach(dependency => {
-        const sourceNodeId = nodeMap.get(dependency.filePath);
-        if (!sourceNodeId) {
-            return;
-        }
-        // Create outgoing dependency edges
-        if (dependency.outgoingDependencies) {
-            dependency.outgoingDependencies.forEach((target) => {
-                const targetNodeId = nodeMap.get(target);
-                if (targetNodeId) {
-                    edges.push({
-                        source: sourceNodeId,
-                        target: targetNodeId,
-                        type: 'dependency',
-                        metadata: {
-                            direction: 'outgoing'
-                        }
-                    });
-                }
-            });
-        }
-        // Create incoming dependency edges
-        if (dependency.incomingDependencies) {
-            dependency.incomingDependencies.forEach((source) => {
-                const sourceId = nodeMap.get(source);
-                if (sourceId) {
-                    edges.push({
-                        source: sourceId,
-                        target: sourceNodeId,
-                        type: 'dependency',
-                        metadata: {
-                            direction: 'incoming'
-                        }
-                    });
-                }
-            });
-        }
-    });
-    return {
-        nodes,
-        edges,
-        metadata: {
-            projectType: 'typescript',
-            projectName: 'TypeScript Project',
-            convertedAt: new Date().toISOString(),
-            originalFormat: {}
-        }
-    };
-}
-
-
-/***/ }),
-/* 26 */
-/***/ ((__unused_webpack_module, exports) => {
-
-
-// src/converter/types.ts
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-
-
-/***/ }),
-/* 27 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__webpack_require__(28), exports);
-
-
-/***/ }),
 /* 28 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(29), exports);
+
+
+/***/ }),
+/* 29 */
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -2655,22 +3303,22 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.TypeScriptParser = void 0;
-// src/parsers/typescript/typescript-parser.ts
+exports.PythonParser = void 0;
+// src/parsers/python/python-parser.ts
 const vscode = __importStar(__webpack_require__(2));
 const fs = __importStar(__webpack_require__(4));
 const path = __importStar(__webpack_require__(3));
 const cp = __importStar(__webpack_require__(11));
 const base_parser_1 = __webpack_require__(12);
 /**
- * Parser for TypeScript/JavaScript projects
+ * Parser for Python projects
  */
-class TypeScriptParser extends base_parser_1.BaseParser {
-    language = 'typescript';
+class PythonParser extends base_parser_1.BaseParser {
+    language = 'python';
     /**
-     * Parse the TypeScript project and generate language-specific dependencies
+     * Parse the Python project and generate language-specific dependencies
      * @param projectType Information about the project to parse
-     * @returns A promise that resolves to the TypeScript-specific dependencies
+     * @returns A promise that resolves to the Python-specific dependencies
      */
     async parseToLanguageSpecific(projectType) {
         const rootFolder = projectType.rootPath;
@@ -2684,56 +3332,73 @@ class TypeScriptParser extends base_parser_1.BaseParser {
         if (fs.existsSync(outputFilePath)) {
             fs.unlinkSync(outputFilePath);
         }
-        // Path to the TypeScript parser script (shipped with the extension)
-        const tsParserPath = this.getTypeScriptParserPath();
-        // Determine Node.js executable
-        const nodePath = await this.getNodePath();
-        // Build command to run the TypeScript parser
-        const command = `"${nodePath}" "${tsParserPath}" --input "${rootFolder}" --output "${outputFilePath}"`;
+        // Path to the Python parser script (shipped with the extension)
+        const pythonParserPath = this.getPythonParserPath();
+        // Determine the Python executable
+        const pythonExecutable = await this.getPythonExecutable();
+        // Build command to run the Python parser
+        const command = `"${pythonExecutable}" "${pythonParserPath}" "${rootFolder}" "${outputFilePath}"`;
         // Show progress notification
-        vscode.window.showInformationMessage(`Analyzing TypeScript/JavaScript project in ${rootFolder}...`);
-        // Run TypeScript parser
+        vscode.window.showInformationMessage(`Analyzing Python project in ${rootFolder}...`);
+        // Run Python parser
         await this.executeCommand(command, outputDir);
         // Check if output file was generated
         if (!fs.existsSync(outputFilePath)) {
-            throw new Error('Failed to generate TypeScript dependencies');
+            throw new Error('Failed to generate Python dependencies');
         }
         // Parse the output file
-        const tsOutputJson = JSON.parse(fs.readFileSync(outputFilePath, 'utf-8'));
-        // Return the TypeScript-specific dependencies
-        return tsOutputJson;
+        const pythonOutputJson = JSON.parse(fs.readFileSync(outputFilePath, 'utf-8'));
+        // Return the Python-specific dependencies
+        return pythonOutputJson;
     }
     /**
-     * Get the path to the TypeScript parser script
-     * @returns The path to the TypeScript parser script
+     * Get the path to the Python parser script
+     * @returns The path to the Python parser script
      */
-    getTypeScriptParserPath() {
+    getPythonParserPath() {
         // The extension context provides the path to the extension's installation directory
-        const extensionPath = vscode.extensions.getExtension('your-publisher-name.dependency-analytics')?.extensionPath;
+        const extensionPath = vscode.extensions.getExtension('Optivance.dependency-analytics-tool')?.extensionPath;
         if (!extensionPath) {
             throw new Error('Could not determine extension path');
         }
-        // The TypeScript parser script is in the extension's resources/parsers/typescript directory
-        const tsParserPath = path.join(extensionPath, 'resources', 'parsers', 'typescript', 'ts-parser.js');
+        // The Python parser script is in the extension's resources/parsers/python directory
+        const pythonParserPath = path.join(extensionPath, 'resources', 'parsers', 'python', 'python_parser.py');
         // Verify that the parser exists
-        if (!fs.existsSync(tsParserPath)) {
-            throw new Error(`TypeScript parser not found at ${tsParserPath}`);
+        if (!fs.existsSync(pythonParserPath)) {
+            throw new Error(`Python parser not found at ${pythonParserPath}`);
         }
-        return tsParserPath;
+        return pythonParserPath;
     }
     /**
-     * Get the Node.js executable path
-     * @returns A promise that resolves to the Node.js executable path
+     * Get the Python executable path
+     * @returns A promise that resolves to the Python executable path
      */
-    async getNodePath() {
+    async getPythonExecutable() {
         // Try to get from settings first
         const config = vscode.workspace.getConfiguration('dependencyAnalytics');
-        const nodePath = config.get('nodePath');
-        if (nodePath) {
-            return nodePath;
+        let pythonPath = config.get('pythonPath');
+        if (pythonPath) {
+            return pythonPath;
         }
-        // Fall back to 'node' on PATH
-        return 'node';
+        // Try to get the Python extension's selected interpreter
+        try {
+            const extension = vscode.extensions.getExtension('ms-python.python');
+            if (extension) {
+                const pythonExtension = await extension.activate();
+                if (pythonExtension && pythonExtension.exports) {
+                    const api = pythonExtension.exports;
+                    pythonPath = api.getActiveInterpreterPath?.();
+                    if (pythonPath) {
+                        return pythonPath;
+                    }
+                }
+            }
+        }
+        catch (error) {
+            console.warn('Failed to get Python interpreter from Python extension:', error);
+        }
+        // Fall back to 'python3' or 'python' on PATH
+        return process.platform === 'win32' ? 'python' : 'python3';
     }
     /**
      * Execute a command as a Promise
@@ -2758,7 +3423,7 @@ class TypeScriptParser extends base_parser_1.BaseParser {
         });
     }
 }
-exports.TypeScriptParser = TypeScriptParser;
+exports.PythonParser = PythonParser;
 
 
 /***/ })

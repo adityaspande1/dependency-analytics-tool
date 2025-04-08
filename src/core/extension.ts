@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import { ProjectDetector } from '../project-detector';
 import { ParserRegistry } from '../parsers/parser-registry';
 import { JavaParser } from '../parsers/java';
+import { PythonParser } from '../parsers/python';
 import { TypeScriptParser } from '../parsers/typescript';
 import { DependencyTreeProvider } from '../views/tree/dependency-tree';
 import { StructureTreeProvider } from '../views/tree/structure-tree';
@@ -31,7 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Create parser registry and register parsers
     const parserRegistry = new ParserRegistry();
     parserRegistry.registerParser(new JavaParser());
-    // parserRegistry.registerParser(new PythonParser());
+    parserRegistry.registerParser(new PythonParser());
     parserRegistry.registerParser(new TypeScriptParser());
     
     // Create project detector
@@ -206,7 +207,7 @@ export function activate(context: vscode.ExtensionContext) {
         }),
         
         // Show diagram command
-        vscode.commands.registerCommand('dependencyAnalytics.showDiagram', async (node: any) => {
+        vscode.commands.registerCommand('dependencyAnalytics.showClassDiagram', async (node: any) => {
             if (!node) {
                 vscode.window.showErrorMessage('Please select a node to show its diagram');
                 return;

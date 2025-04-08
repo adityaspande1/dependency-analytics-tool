@@ -1,3 +1,4 @@
+// src/views/diagram/graph-generator.ts
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -31,7 +32,7 @@ export abstract class DiagramGenerator {
         // Create a webview panel
         const panel = vscode.window.createWebviewPanel(
             'dependencyDiagram',
-            `Diagram: ${targetNode.title}`,
+           ` Diagram: ${targetNode.title}`,
             vscode.ViewColumn.One,
             { 
                 enableScripts: true,
@@ -195,6 +196,40 @@ ${diagram}
                                 }
                             }
                         }, { passive: false });
+                        
+                        // Track scroll position relative to zoom origin
+                        let lastScrollX = 0;
+                        let lastScrollY = 0;
+                        const scrollContainer = document.getElementById('scroll-container');
+                        
+                        scrollContainer.addEventListener('scroll', function() {
+                            lastScrollX = this.scrollLeft;
+                            lastScrollY = this.scrollTop;
+                        });
+                        
+                        // Keyboard shortcuts for zoom
+                        document.addEventListener('keydown', function(event) {
+                            if (event.ctrlKey || event.metaKey) {
+                                if (event.key === '=' || event.key === '+') {
+                                    event.preventDefault();
+                                    zoomIn();
+                                } else if (event.key === '-') {
+                                    event.preventDefault();
+                                    zoomOut();
+                                } else if (event.key === '0') {
+                                    event.preventDefault();
+                                    resetZoom();
+                                }
+                            }
+                        });
+                        
+                        // Initial render
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Force re-render after a short delay to ensure proper layout
+                            setTimeout(function() {
+                                mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+                            }, 200);
+                        });
                     </script>
                 </body>
                 </html>
@@ -204,4 +239,77 @@ ${diagram}
         // Set the HTML content
         panel.webview.html = htmlContent;
     }
+    
+    /**
+     * Utility to safely convert node names for diagrams
+     * @param name The name to convert
+     * @returns A safe version of the name
+     */
+    protected safeName(name: string): string {
+        if (!name) return 'Unknown';
+        return name.replace(/[^\w\s]/g, '_');
+    }
+    
+    /**
+     * Extract the simple name from a fully qualified name
+     * @param fullName The fully qualified name
+     * @returns The simple name
+     */
+    protected getSimpleName(fullName: string): string {
+        if (!fullName) return '';
+        const parts = fullName.split('.');
+        return parts[parts.length - 1];
+    }
+    
+    /**
+     * Get color for a node type
+     * @param nodeType The node type
+     * @returns A color hex code
+     */
+    protected getColorForType(nodeType: string): string {
+        switch (nodeType.toLowerCase()) {
+            case 'class':
+                return '#4285F4'; // Blue
+            case 'interface':
+                return '#34A853'; // Green
+            case 'package':
+            case 'module':
+                return '#FBBC05'; // Yellow
+            case 'component':
+                return '#EA4335'; // Red
+            case 'model':
+                return '#9C27B0'; // Purple
+            case 'view':
+                return '#00ACC1'; // Cyan
+            default:
+                return '#757575'; // Gray
+        }
+    }
+    
+    /**
+     * Format a relationship type for display
+     * @param relationType The relationship type
+     * @returns A formatted description
+     */
+    protected formatRelationship(relationType: string): string {
+        switch (relationType.toLowerCase()) {
+            case 'inheritance':
+            case 'extends':
+                return 'extends';
+            case 'implementation':
+            case 'implements':
+                return 'implements';
+            case 'dependency':
+                return 'uses';
+            case 'contains':
+                return 'contains';
+            case 'renders':
+                return 'renders';
+            default:
+                return relationType;
+        }
+    }
 }
+
+// Export the DiagramGenerator
+export default DiagramGenerator;
