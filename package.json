@@ -1,0 +1,122 @@
+{
+  "name": "dependency-analytics-tool",
+  "displayName": "Dependency Analytics Tool",
+  "description": "",
+  "version": "0.0.1",
+  "publisher": "Optivance",
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:dependencyAnalytics.startAnalysis",
+    "onView:dependencyView",
+    "onView:classStructure",
+    "workspaceContains:/*.java",
+    "workspaceContains:/*.py",
+    "workspaceContains:/*.ts",
+    "workspaceContains:/*.js"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "dependencyAnalytics.startAnalysis",
+        "title": "Start Dependency Analysis",
+        "category": "Dependency Analytics",
+        "icon": "$(play)"
+      },
+      {
+        "command": "dependencyAnalytics.refreshAnalysis",
+        "title": "Refresh Dependency Analysis",
+        "category": "Dependency Analytics",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "dependencyAnalytics.showClassDetails",
+        "title": "Show Class Details",
+        "category": "Dependency Analytics"
+      },
+      {
+        "command": "dependencyAnalytics.navigateToDeclaration",
+        "title": "Navigate to Declaration",
+        "category": "Dependency Analytics"
+      },
+      {
+        "command": "dependencyAnalytics.showClassDiagram",
+        "title": "Show Class Diagram",
+        "category": "Dependency Analytics",
+        "icon": "$(preview)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "dependencyAnalytics.startAnalysis",
+          "when": "view == dependencyView",
+          "group": "navigation"
+        },
+        {
+          "command": "dependencyAnalytics.refreshAnalysis",
+          "when": "view == dependencyView",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "dependencyAnalytics.showClassDiagram",
+          "when": "view == dependencyView && viewItem == class",
+          "group": "inline"
+        }
+      ]
+    },
+    "views": {
+      "package-tree-sideview": [
+        {
+          "id": "dependencyView",
+          "name": "Dependency View"
+        },
+        {
+          "id": "classStructure",
+          "name": "Class Structure"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "package-tree-sideview",
+          "title": "Package Tree",
+          "icon": "media/icon/dataflow.png"
+        }
+      ]
+    }
+  },
+  "main": "./dist/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.99.0",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/parser": "^7.11.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5",
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.92.1",
+    "webpack-cli": "^5.1.4",
+    "@vscode/test-cli": "^0.0.9",
+    "@vscode/test-electron": "^2.4.0"
+  }
+}

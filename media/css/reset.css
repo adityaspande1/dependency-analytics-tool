@@ -1,0 +1,49 @@
+html {
+	box-sizing: border-box;
+	font-size: 13px;
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul {
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+/* Hide all nested elements by default */
+.nested {
+    display: none;
+}
+
+.nested.active {
+    display: block;
+}
+
+/* Style for the toggle buttons */
+.tree-toggle {
+    cursor: pointer;
+    margin-right: 5px;
+    font-weight: bold;
+}
+.class-name {
+    cursor: pointer;
+}
