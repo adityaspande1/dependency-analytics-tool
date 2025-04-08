@@ -1,0 +1,116 @@
+/* Import styles from digramaatic_ui if available */
+@import '../.yalc/digramaatic_ui/src/App.css';
+@import '../.yalc/digramaatic_ui/src/index.css';
+
+/* Import Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  #root {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@layer components {
+  /* Graph container */
+  .graph-container {
+    @apply flex-1 relative overflow-hidden w-full h-full;
+    background-color: var(--background-color, #ffffff);
+    color: var(--text-color, #333333);
+  }
+
+  /* Node styles */
+  .graph-node {
+    @apply cursor-pointer transition-all duration-300;
+    fill: var(--node-fill, #e2e8f0);
+    stroke: var(--node-stroke, #cbd5e0);
+  }
+
+  .graph-node:hover {
+    @apply shadow-lg;
+    filter: brightness(1.1);
+    transform: scale(1.05);
+  }
+
+  .graph-node-selected {
+    stroke: #ffc107;
+    stroke-width: 2px;
+    filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.5));
+  }
+
+  /* Edge styles */
+  .graph-edge {
+    @apply transition-all duration-300;
+    stroke: var(--edge-stroke, #a0aec0);
+    stroke-width: 1.5px;
+  }
+
+  .graph-edge:hover {
+    stroke-width: 2.5px;
+    filter: drop-shadow(0 0 3px rgba(160, 174, 192, 0.5));
+  }
+
+  /* Node labels */
+  .graph-node-label {
+    @apply text-sm font-semibold;
+    fill: var(--text-color, #333333);
+    pointer-events: none;
+  }
+}
+
+/* Dark theme overrides */
+.vscode-dark {
+  --background-color: #1e1e1e;
+  --text-color: #e0e0e0;
+  --node-fill: #2d3748;
+  --node-stroke: #4a5568;
+  --edge-stroke: #718096;
+  color-scheme: dark;
+}
+
+/* Light theme */
+.vscode-light {
+  --background-color: #ffffff;
+  --text-color: #333333;
+  --node-fill: #e2e8f0;
+  --node-stroke: #cbd5e0;
+  --edge-stroke: #a0aec0;
+  color-scheme: light;
+}
+
+/* Tailwind-like utility classes */
+.h-full { height: 100%; }
+.w-full { width: 100%; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.p-4 { padding: 1rem; }
+.m-2 { margin: 0.5rem; }
+.rounded { border-radius: 0.25rem; }
+.bg-blue-500 { background-color: #3b82f6; }
+.text-white { color: white; }
+.font-bold { font-weight: 700; }
+.absolute { position: absolute; }
+.relative { position: relative; }
+.z-10 { z-index: 10; }
+.overflow-hidden { overflow: hidden; }
+.shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); } 

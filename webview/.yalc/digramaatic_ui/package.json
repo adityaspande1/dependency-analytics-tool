@@ -1,0 +1,21 @@
+{
+  "name": "digramaatic_ui",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "This is a UI Library for generating Graphs and Dependency Diagrams.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.0.16",
+    "lucide-react": "^0.483.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.16"
+  },
+  "yalcSig": "ed8d9f842d76c95a669e4893fd264e3c"
+}
