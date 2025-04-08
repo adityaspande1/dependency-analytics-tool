@@ -1,14 +1,21 @@
+# .vscodeignore
 .vscode/**
 .vscode-test/**
-out/**
-node_modules/**
 src/**
 .gitignore
 .yarnrc
 webpack.config.js
-vsc-extension-quickstart.md
+*.js.map
+*.ts
+webview/src/**
+webview/node_modules/**
+webview/package-lock.json
+webview/tsconfig.json
+webview/vite.config.ts
 **/tsconfig.json
 **/.eslintrc.json
 **/*.map
 **/*.ts
-**/.vscode-test.*
+
+# Don't ignore compiled webview
+!dist/webview/**

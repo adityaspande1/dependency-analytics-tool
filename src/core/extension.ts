@@ -14,6 +14,7 @@ import { FileUtils } from '../utils';
 import { convertDependencies, detectDependencyType } from '../converter';
 import { Graph } from '../converter/types';
 import { ProjectType } from './types';
+import { ReactGraphGenerator } from '../views/diagram/react-graph-generator';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Dependency Analytics Extension is now active');
@@ -40,6 +41,7 @@ export function activate(context: vscode.ExtensionContext) {
     
     // Create diagram generator
     const diagramGenerator = new MermaidGenerator();
+    const reactGraphGenerator = new ReactGraphGenerator();
     
     // Store the current dependency graph
     let currentDependencyGraph: Graph | null = null;
@@ -203,29 +205,29 @@ export function activate(context: vscode.ExtensionContext) {
         // Show node details command
         vscode.commands.registerCommand('dependencyAnalytics.showNodeDetails', (node: any) => {
             // Update the structure tree view
-            structureTreeProvider.setNode(node);
+            structureTreeProvider.setNode(node.node);
         }),
         
         // Show diagram command
         vscode.commands.registerCommand('dependencyAnalytics.showClassDiagram', async (node: any) => {
-            if (!node) {
+            if (!node || !node.node) {
                 vscode.window.showErrorMessage('Please select a node to show its diagram');
                 return;
             }
             
             try {
                 // First update the structure view
-                structureTreeProvider.setNode(node);
+                structureTreeProvider.setNode(node.node);
                 
                 // Log to help debug
-                outputChannel.appendLine(`Showing diagram for node: ${node.title}`);
+                outputChannel.appendLine(`Showing diagram for node: ${node.node.title}`);
                 
                 // Show the diagram
-                await diagramGenerator.showDiagram(
+                await reactGraphGenerator.showDiagram(
                     context,
-                    node,
+                    node.node,
                     allNodes,
-                    'mermaid'
+                    'react' // Always use React format
                 );
             } catch (error) {
                 outputChannel.appendLine(`Error showing diagram: ${error}`);
@@ -241,7 +243,7 @@ export function activate(context: vscode.ExtensionContext) {
             }
             
             try {
-                const sourceFile = node.metadata.sourceFile;
+                const sourceFile = node.node.metadata.sourceFile;
                 
                 // Find the source file
                 const files = await vscode.workspace.findFiles(`**/${sourceFile}`);
