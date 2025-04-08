@@ -2,7 +2,7 @@
 import { Graph } from './types';
 import { convertJavaDependencies } from './java-converter';
 import { convertTypeScriptDependencies } from './typescript-converter';
-
+import { convertPythonDependencies } from './python-converter';
 /**
  * Detect the type of dependency data based on file content
  */
@@ -44,6 +44,7 @@ export function convertDependencies(data: any): Graph {
     case 'java':
       return convertJavaDependencies(data);
     case 'python':
+      return convertPythonDependencies(data);
     default:
       throw new Error(`Unknown dependency data format`);
   }

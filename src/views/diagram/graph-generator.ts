@@ -1,37 +1,37 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Dependency, Method, Field } from '../../core/types';
+import { Node } from '../../converter/types';
 
 /**
  * Base class for diagram generators
  */
 export abstract class DiagramGenerator {
     /**
-     * Generate a diagram for a class
-     * @param classItem The class to generate a diagram for
-     * @param allClasses All classes in the project (for finding relationships)
+     * Generate a diagram for a node
+     * @param targetNode The node to generate a diagram for
+     * @param allNodes All nodes in the project (for finding relationships)
      * @returns The generated diagram as a string
      */
-    public abstract generateDiagram(classItem: Dependency, allClasses: Dependency[]): string;
+    public abstract generateDiagram(targetNode: Node, allNodes: Node[]): string;
     
     /**
      * Display the generated diagram in a webview panel
      * @param context The extension context
-     * @param classItem The class to show the diagram for
-     * @param allClasses All classes in the project
+     * @param targetNode The node to show the diagram for
+     * @param allNodes All nodes in the project
      * @param diagramFormat The format of the diagram (e.g., 'mermaid')
      */
     public async showDiagram(
         context: vscode.ExtensionContext,
-        classItem: Dependency,
-        allClasses: Dependency[],
+        targetNode: Node,
+        allNodes: Node[],
         diagramFormat: string = 'mermaid'
     ): Promise<void> {
         // Create a webview panel
         const panel = vscode.window.createWebviewPanel(
-            'classDiagram',
-            `Class Diagram: ${classItem.name.split('.').pop()}`,
+            'dependencyDiagram',
+            `Diagram: ${targetNode.title}`,
             vscode.ViewColumn.One,
             { 
                 enableScripts: true,
@@ -42,7 +42,7 @@ export abstract class DiagramGenerator {
         );
         
         // Generate the diagram
-        const diagram = this.generateDiagram(classItem, allClasses);
+        const diagram = this.generateDiagram(targetNode, allNodes);
         
         // Read HTML template
         let htmlPath = path.join(context.extensionPath, 'media', 'html', 'webview.html');
@@ -70,7 +70,7 @@ export abstract class DiagramGenerator {
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Class Diagram</title>
+                    <title>Dependency Diagram</title>
                     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.0.0/dist/mermaid.min.js"></script>
                     <style>
                         body {

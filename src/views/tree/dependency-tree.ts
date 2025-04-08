@@ -234,7 +234,7 @@ export class DependencyTreeItem extends vscode.TreeItem {
         }
         
         // Get the extension path using VS Code API
-        const extensionPath = vscode.extensions.getExtension('your-publisher-name.dependency-analytics')?.extensionPath || '';
+        const extensionPath = vscode.extensions.getExtension('Optivance.dependency-analytics-tool')?.extensionPath || '';
         
         return {
             light: vscode.Uri.file(path.join(extensionPath, 'resources', 'icons', 'light', `${iconName}.svg`)),
