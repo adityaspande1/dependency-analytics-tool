@@ -74,6 +74,171 @@
     fill: var(--text-color, #333333);
     pointer-events: none;
   }
+  
+  /* Component detail card */
+  .component-detail {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    max-width: 360px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 12px;
+    background-color: rgba(30, 30, 30, 0.95);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+    padding: 1.5rem;
+    animation: slideIn 0.3s ease-out;
+    transition: all 0.3s ease;
+  }
+  
+  .component-detail.closing {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  
+  @keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  .component-heading {
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .component-heading .file-path {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    margin-top: 0.25rem;
+    font-weight: normal;
+  }
+  
+  .component-section {
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    background-color: rgba(45, 45, 45, 0.5);
+    transition: all 0.2s ease;
+    overflow: hidden;
+  }
+  
+  .section-heading {
+    font-weight: bold;
+    padding: 0.75rem 1rem;
+    color: #64D2FF;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(35, 35, 35, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .section-heading:hover {
+    background-color: rgba(50, 50, 50, 0.7);
+  }
+  
+  .section-heading .count {
+    background-color: rgba(100, 210, 255, 0.15);
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    color: #64D2FF;
+  }
+  
+  .section-items {
+    padding: 0.5rem 1rem;
+  }
+  
+  .section-item {
+    display: flex;
+    align-items: baseline;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .section-item:last-child {
+    border-bottom: none;
+  }
+  
+  .item-name {
+    font-weight: bold;
+    margin-right: 0.5rem;
+    min-width: 40%;
+  }
+  
+  .item-value {
+    opacity: 0.85;
+    word-break: break-word;
+  }
+  
+  .item-prop .item-name {
+    color: #F8C555;
+  }
+  
+  .item-state .item-name {
+    color: #FC9AD9;
+  }
+  
+  .item-hook .item-name {
+    color: #56D364;
+  }
+  
+  .item-method .item-name {
+    color: #71B7FF;
+  }
+  
+  .item-button {
+    background-color: rgba(100, 210, 255, 0.15);
+    border: none;
+    color: #64D2FF;
+    border-radius: 4px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 0.5rem;
+  }
+  
+  .item-button:hover {
+    background-color: rgba(100, 210, 255, 0.3);
+  }
+  
+  .close-detail {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+    line-height: 1;
+  }
+  
+  .close-detail:hover {
+    color: white;
+  }
+  
+  /* Collapsible sections */
+  .section-collapsed .section-items {
+    display: none;
+  }
+  
+  .section-arrow {
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+  }
+  
+  .section-collapsed .section-arrow {
+    transform: rotate(-90deg);
+  }
 }
 
 /* Dark theme overrides */
@@ -86,7 +251,7 @@
   color-scheme: dark;
 }
 
-/* Light theme */
+/* Light theme overrides */
 .vscode-light {
   --background-color: #ffffff;
   --text-color: #333333;
@@ -94,6 +259,48 @@
   --node-stroke: #cbd5e0;
   --edge-stroke: #a0aec0;
   color-scheme: light;
+  
+  .component-detail {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .component-section {
+    background-color: rgba(240, 240, 240, 0.7);
+  }
+  
+  .section-heading {
+    background-color: rgba(230, 230, 230, 0.7);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    color: #0078D4;
+  }
+  
+  .section-heading .count {
+    background-color: rgba(0, 120, 212, 0.15);
+    color: #0078D4;
+  }
+  
+  .section-item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .item-button {
+    background-color: rgba(0, 120, 212, 0.15);
+    color: #0078D4;
+  }
+  
+  .item-button:hover {
+    background-color: rgba(0, 120, 212, 0.3);
+  }
+  
+  .close-detail {
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .close-detail:hover {
+    color: black;
+  }
 }
 
 /* Tailwind-like utility classes */

@@ -45,12 +45,18 @@
       },
       {
         "command": "dependencyAnalytics.showClassDiagram",
-        "title": "Show Class Diagram",
+        "title": "Show Dependency Diagram",
         "category": "Dependency Analytics",
         "icon": "$(preview)"
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "dependencyAnalytics.showClassDiagram",
+          "when": "workspaceHasPackageJSON"
+        }
+      ],
       "view/title": [
         {
           "command": "dependencyAnalytics.startAnalysis",
@@ -66,7 +72,7 @@
       "view/item/context": [
         {
           "command": "dependencyAnalytics.showClassDiagram",
-          "when": "view == dependencyView && viewItem == class",
+          "when": "view == dependencyView && (viewItem == class || viewItem == component || viewItem == module || viewItem == function)",
           "group": "inline"
         }
       ]

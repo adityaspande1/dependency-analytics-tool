@@ -1,0 +1,3663 @@
+{
+  "nodes": [
+    {
+      "id": "comp_VerifiedMark",
+      "title": "VerifiedMark",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "components/verified-mark.tsx",
+        "name": "VerifiedMark"
+      }
+    },
+    {
+      "id": "comp_Thumbnail",
+      "title": "Thumbnail",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Thumbnail_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_Thumbnail_props",
+              "value": "props: ThumbnailProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Thumbnail_src",
+              "value": "src: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Thumbnail_fallback",
+              "value": "fallback: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Thumbnail_isLive",
+              "value": "isLive: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Thumbnail_username",
+              "value": "username: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/thumbnail.tsx",
+        "name": "Thumbnail"
+      }
+    },
+    {
+      "id": "comp_ThumbnailSkeleton",
+      "title": "ThumbnailSkeleton",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "components/thumbnail.tsx",
+        "name": "ThumbnailSkeleton"
+      }
+    },
+    {
+      "id": "comp_ThemeProvider",
+      "title": "ThemeProvider",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ThemeProvider_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_ThemeProvider_props",
+              "value": "props: ThemeProviderProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ThemeProvider_children",
+              "value": "children: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/theme-provider.tsx",
+        "name": "ThemeProvider"
+      }
+    },
+    {
+      "id": "comp_LiveVideo",
+      "title": "LiveVideo",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_LiveVideo_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_LiveVideo_props",
+              "value": "props: LiveVideoProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_LiveVideo_participant",
+              "value": "participant: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_LiveVideo_state",
+          "name": "State",
+          "items": [
+            {
+              "id": "state_LiveVideo_isFullScreen",
+              "value": "isFullScreen: boolean = false",
+              "icon": "state"
+            },
+            {
+              "id": "state_LiveVideo_volume",
+              "value": "volume: number = 0",
+              "icon": "state"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_LiveVideo_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_LiveVideo_useRef",
+              "value": "useRef",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_LiveVideo_useState",
+              "value": "useState",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_LiveVideo_useEffect",
+              "value": "useEffect",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_LiveVideo_useEventListener",
+              "value": "useEventListener (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_LiveVideo_useTracks",
+              "value": "useTracks (custom)",
+              "icon": "hook"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/live-video.tsx",
+        "name": "LiveVideo"
+      }
+    },
+    {
+      "id": "comp_Hint",
+      "title": "Hint",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Hint_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_Hint_props",
+              "value": "props: HintProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Hint_label",
+              "value": "label: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Hint_children",
+              "value": "children: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Hint_asChild",
+              "value": "asChild: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Hint_align",
+              "value": "align: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Hint_side",
+              "value": "side: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/hint.tsx",
+        "name": "Hint"
+      }
+    },
+    {
+      "id": "comp_NotFoundPage",
+      "title": "NotFoundPage",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "app/(browse)/[username]/not-found.tsx",
+        "name": "NotFoundPage"
+      }
+    },
+    {
+      "id": "comp_RootLayout",
+      "title": "RootLayout",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_RootLayout_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_RootLayout_props",
+              "value": "props: Readonly (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_RootLayout_children",
+              "value": "children: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_RootLayout_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_RootLayout_ThemeProvider",
+              "value": "ThemeProvider",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/layout.tsx",
+        "name": "RootLayout"
+      }
+    },
+    {
+      "id": "comp_ErrorPage",
+      "title": "ErrorPage",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "app/(browse)/[username]/error.tsx",
+        "name": "ErrorPage"
+      }
+    },
+    {
+      "id": "comp_VolumeControl",
+      "title": "VolumeControl",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_VolumeControl_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_VolumeControl_props",
+              "value": "props: VolumeControlProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_VolumeControl_value",
+              "value": "value: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_VolumeControl_onToggle",
+              "value": "onToggle: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_VolumeControl_onChange",
+              "value": "onChange: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_VolumeControl_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_VolumeControl_Hint",
+              "value": "Hint",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/volume-control.tsx",
+        "name": "VolumeControl"
+      }
+    },
+    {
+      "id": "comp_Video",
+      "title": "Video",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Video_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_Video_props",
+              "value": "props: VideoProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Video_hostname",
+              "value": "hostname: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Video_hostIdentity",
+              "value": "hostIdentity: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Video_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_Video_useConnectionState",
+              "value": "useConnectionState (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Video_useRemoteParticipant",
+              "value": "useRemoteParticipant (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Video_useTracks",
+              "value": "useTracks (custom)",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Video_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_Video_LiveVideo",
+              "value": "LiveVideo",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/video.tsx",
+        "name": "Video"
+      }
+    },
+    {
+      "id": "comp_VideoSkeleton",
+      "title": "VideoSkeleton",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "components/stream-player/video.tsx",
+        "name": "VideoSkeleton"
+      }
+    },
+    {
+      "id": "comp_VariantToggle",
+      "title": "VariantToggle",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_VariantToggle_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_VariantToggle_useChatSidebar",
+              "value": "useChatSidebar (custom)",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_VariantToggle_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_VariantToggle_Hint",
+              "value": "Hint",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/variant-toggle.tsx",
+        "name": "VariantToggle"
+      }
+    },
+    {
+      "id": "comp_OfflineVideo",
+      "title": "OfflineVideo",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_OfflineVideo_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_OfflineVideo_props",
+              "value": "props: OfflineVideoProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_OfflineVideo_username",
+              "value": "username: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/offline-video.tsx",
+        "name": "OfflineVideo"
+      }
+    },
+    {
+      "id": "comp_LoadingVideo",
+      "title": "LoadingVideo",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_LoadingVideo_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_LoadingVideo_props",
+              "value": "props: LoadingVideoProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_LoadingVideo_label",
+              "value": "label: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/loading-video.tsx",
+        "name": "LoadingVideo"
+      }
+    },
+    {
+      "id": "comp_InfoModal",
+      "title": "InfoModal",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_InfoModal_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_InfoModal_props",
+              "value": "props: InfoModalProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_InfoModal_initialThumbnailUrl",
+              "value": "initialThumbnailUrl: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_InfoModal_initialName",
+              "value": "initialName: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_InfoModal_state",
+          "name": "State",
+          "items": [
+            {
+              "id": "state_InfoModal_name",
+              "value": "name: initialName",
+              "icon": "state"
+            },
+            {
+              "id": "state_InfoModal_thumbnailUrl",
+              "value": "thumbnailUrl: initialThumbnailUrl",
+              "icon": "state"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_InfoModal_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_InfoModal_useState",
+              "value": "useState",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_InfoModal_useTransition",
+              "value": "useTransition (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_InfoModal_useRef",
+              "value": "useRef",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_InfoModal_useRouter",
+              "value": "useRouter (custom)",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_InfoModal_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_InfoModal_Hint",
+              "value": "Hint",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/info-modal.tsx",
+        "name": "InfoModal"
+      }
+    },
+    {
+      "id": "comp_InfoCard",
+      "title": "InfoCard",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_InfoCard_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_InfoCard_props",
+              "value": "props: InfoCardProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_InfoCard_hostIdentity",
+              "value": "hostIdentity: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_InfoCard_viewerIdentity",
+              "value": "viewerIdentity: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_InfoCard_name",
+              "value": "name: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_InfoCard_thumbnailUrl",
+              "value": "thumbnailUrl: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_InfoCard_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_InfoCard_InfoModal",
+              "value": "InfoModal",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/info-card.tsx",
+        "name": "InfoCard"
+      }
+    },
+    {
+      "id": "comp_StreamPlayer",
+      "title": "StreamPlayer",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_StreamPlayer_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_StreamPlayer_props",
+              "value": "props: StreamPlayerProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_StreamPlayer_user",
+              "value": "user: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_StreamPlayer_stream",
+              "value": "stream: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_StreamPlayer_isFollowing",
+              "value": "isFollowing: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_StreamPlayer_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_StreamPlayer_useViewerToken",
+              "value": "useViewerToken (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_StreamPlayer_useChatSidebar",
+              "value": "useChatSidebar (custom)",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_StreamPlayer_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_StreamPlayer_StreamPlayerSkeleton",
+              "value": "StreamPlayerSkeleton",
+              "icon": "component"
+            },
+            {
+              "id": "child_StreamPlayer_Video",
+              "value": "Video",
+              "icon": "component"
+            },
+            {
+              "id": "child_StreamPlayer_InfoCard",
+              "value": "InfoCard",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/index.tsx",
+        "name": "StreamPlayer"
+      }
+    },
+    {
+      "id": "comp_StreamPlayerSkeleton",
+      "title": "StreamPlayerSkeleton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_StreamPlayerSkeleton_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_StreamPlayerSkeleton_VideoSkeleton",
+              "value": "VideoSkeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/index.tsx",
+        "name": "StreamPlayerSkeleton"
+      }
+    },
+    {
+      "id": "comp_Header",
+      "title": "Header",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Header_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_Header_props",
+              "value": "props: HeaderProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Header_hostname",
+              "value": "hostname: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Header_hostIdentity",
+              "value": "hostIdentity: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Header_viewerIdentity",
+              "value": "viewerIdentity: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Header_name",
+              "value": "name: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Header_imageUrl",
+              "value": "imageUrl: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Header_isFollowing",
+              "value": "isFollowing: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Header_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_Header_useParticipants",
+              "value": "useParticipants (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Header_useRemoteParticipant",
+              "value": "useRemoteParticipant (custom)",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Header_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_Header_VerifiedMark",
+              "value": "VerifiedMark",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/header.tsx",
+        "name": "Header"
+      }
+    },
+    {
+      "id": "comp_HeaderSkeleton",
+      "title": "HeaderSkeleton",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "components/stream-player/header.tsx",
+        "name": "HeaderSkeleton"
+      }
+    },
+    {
+      "id": "comp_FullScreenControl",
+      "title": "FullScreenControl",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_FullScreenControl_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_FullScreenControl_props",
+              "value": "props: FullScreenControlProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_FullScreenControl_isFullscreen",
+              "value": "isFullscreen: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_FullScreenControl_onToggle",
+              "value": "onToggle: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_FullScreenControl_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_FullScreenControl_Hint",
+              "value": "Hint",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/fullscreen-control.tsx",
+        "name": "FullScreenControl"
+      }
+    },
+    {
+      "id": "comp_CommunityItem",
+      "title": "CommunityItem",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_CommunityItem_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_CommunityItem_props",
+              "value": "props: CommunityItemProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_CommunityItem_hostname",
+              "value": "hostname: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_CommunityItem_participantName",
+              "value": "participantName: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_CommunityItem_viewerName",
+              "value": "viewerName: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_CommunityItem_participantIdentity",
+              "value": "participantIdentity: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_CommunityItem_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_CommunityItem_useTransition",
+              "value": "useTransition (custom)",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_CommunityItem_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_CommunityItem_Hint",
+              "value": "Hint",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/community-item.tsx",
+        "name": "CommunityItem"
+      }
+    },
+    {
+      "id": "comp_Chat",
+      "title": "Chat",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Chat_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_Chat_props",
+              "value": "props: ChatProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Chat_viewerName",
+              "value": "viewerName: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Chat_isChatDelayed",
+              "value": "isChatDelayed: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Chat_isChatEnabled",
+              "value": "isChatEnabled: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Chat_isChatFollowersOnly",
+              "value": "isChatFollowersOnly: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Chat_isFollowing",
+              "value": "isFollowing: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Chat_hostIdentity",
+              "value": "hostIdentity: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Chat_hostname",
+              "value": "hostname: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Chat_state",
+          "name": "State",
+          "items": [
+            {
+              "id": "state_Chat_value",
+              "value": "value: string = \"\"",
+              "icon": "state"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Chat_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_Chat_useMediaQuery",
+              "value": "useMediaQuery (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Chat_useChatSidebar",
+              "value": "useChatSidebar (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Chat_useConnectionState",
+              "value": "useConnectionState (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Chat_useRemoteParticipant",
+              "value": "useRemoteParticipant (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Chat_useState",
+              "value": "useState",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Chat_useChat",
+              "value": "useChat (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Chat_useEffect",
+              "value": "useEffect",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Chat_useMemo",
+              "value": "useMemo",
+              "icon": "hook"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/chat.tsx",
+        "name": "Chat"
+      }
+    },
+    {
+      "id": "comp_ChatSkeleton",
+      "title": "ChatSkeleton",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "components/stream-player/chat.tsx",
+        "name": "ChatSkeleton"
+      }
+    },
+    {
+      "id": "comp_ChatToggle",
+      "title": "ChatToggle",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ChatToggle_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_ChatToggle_useChatSidebar",
+              "value": "useChatSidebar (custom)",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_ChatToggle_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_ChatToggle_Hint",
+              "value": "Hint",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/chat-toggle.tsx",
+        "name": "ChatToggle"
+      }
+    },
+    {
+      "id": "comp_ChatMessage",
+      "title": "ChatMessage",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ChatMessage_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_ChatMessage_props",
+              "value": "props: ChatMessageProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatMessage_data",
+              "value": "data: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/chat-message.tsx",
+        "name": "ChatMessage"
+      }
+    },
+    {
+      "id": "comp_ChatList",
+      "title": "ChatList",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ChatList_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_ChatList_props",
+              "value": "props: ChatListProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatList_messages",
+              "value": "messages: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatList_isHidden",
+              "value": "isHidden: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_ChatList_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_ChatList_ChatMessage",
+              "value": "ChatMessage",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/chat-list.tsx",
+        "name": "ChatList"
+      }
+    },
+    {
+      "id": "comp_ChatListSkeleton",
+      "title": "ChatListSkeleton",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "components/stream-player/chat-list.tsx",
+        "name": "ChatListSkeleton"
+      }
+    },
+    {
+      "id": "comp_ChatInfo",
+      "title": "ChatInfo",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ChatInfo_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_ChatInfo_props",
+              "value": "props: ChatInfoProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatInfo_isFollowersOnly",
+              "value": "isFollowersOnly: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatInfo_isDelayed",
+              "value": "isDelayed: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_ChatInfo_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_ChatInfo_useMemo",
+              "value": "useMemo",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_ChatInfo_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_ChatInfo_Hint",
+              "value": "Hint",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/chat-info.tsx",
+        "name": "ChatInfo"
+      }
+    },
+    {
+      "id": "comp_ChatHeader",
+      "title": "ChatHeader",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ChatHeader_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_ChatHeader_ChatToggle",
+              "value": "ChatToggle",
+              "icon": "component"
+            },
+            {
+              "id": "child_ChatHeader_VariantToggle",
+              "value": "VariantToggle",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/chat-header.tsx",
+        "name": "ChatHeader"
+      }
+    },
+    {
+      "id": "comp_ChatHeaderSkeleton",
+      "title": "ChatHeaderSkeleton",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "components/stream-player/chat-header.tsx",
+        "name": "ChatHeaderSkeleton"
+      }
+    },
+    {
+      "id": "comp_ChatForm",
+      "title": "ChatForm",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ChatForm_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_ChatForm_props",
+              "value": "props: ChatFormProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatForm_onChange",
+              "value": "onChange: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatForm_isFollowersOnly",
+              "value": "isFollowersOnly: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatForm_isFollowing",
+              "value": "isFollowing: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatForm_onSubmit",
+              "value": "onSubmit: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatForm_value",
+              "value": "value: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatForm_isDelayed",
+              "value": "isDelayed: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatForm_isHidden",
+              "value": "isHidden: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_ChatForm_state",
+          "name": "State",
+          "items": [
+            {
+              "id": "state_ChatForm_isDelayBlocked",
+              "value": "isDelayBlocked: boolean = false",
+              "icon": "state"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_ChatForm_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_ChatForm_useState",
+              "value": "useState",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_ChatForm_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_ChatForm_ChatInfo",
+              "value": "ChatInfo",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/chat-form.tsx",
+        "name": "ChatForm"
+      }
+    },
+    {
+      "id": "comp_ChatFormSkeleton",
+      "title": "ChatFormSkeleton",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "components/stream-player/chat-form.tsx",
+        "name": "ChatFormSkeleton"
+      }
+    },
+    {
+      "id": "comp_ChatCommunity",
+      "title": "ChatCommunity",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ChatCommunity_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_ChatCommunity_props",
+              "value": "props: ChatCommunityProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatCommunity_viewerName",
+              "value": "viewerName: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatCommunity_hostname",
+              "value": "hostname: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ChatCommunity_isHidden",
+              "value": "isHidden: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_ChatCommunity_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_ChatCommunity_useParticipants",
+              "value": "useParticipants (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_ChatCommunity_useDebounceValue",
+              "value": "useDebounceValue (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_ChatCommunity_useMemo",
+              "value": "useMemo",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_ChatCommunity_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_ChatCommunity_CommunityItem",
+              "value": "CommunityItem",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/chat-community.tsx",
+        "name": "ChatCommunity"
+      }
+    },
+    {
+      "id": "comp_BioModal",
+      "title": "BioModal",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_BioModal_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_BioModal_props",
+              "value": "props: BioModalProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_BioModal_initialValue",
+              "value": "initialValue: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_BioModal_state",
+          "name": "State",
+          "items": [
+            {
+              "id": "state_BioModal_value",
+              "value": "value: any",
+              "icon": "state"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_BioModal_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_BioModal_useState",
+              "value": "useState",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_BioModal_useTransition",
+              "value": "useTransition (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_BioModal_useRef",
+              "value": "useRef",
+              "icon": "hook"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/bio-modal.tsx",
+        "name": "BioModal"
+      }
+    },
+    {
+      "id": "comp_Actions",
+      "title": "Actions",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/_components/navbar/actions.tsx",
+        "name": "Actions"
+      }
+    },
+    {
+      "id": "comp_ActionsSkeleton",
+      "title": "ActionsSkeleton",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "components/stream-player/actions.tsx",
+        "name": "ActionsSkeleton"
+      }
+    },
+    {
+      "id": "comp_AboutCard",
+      "title": "AboutCard",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_AboutCard_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_AboutCard_props",
+              "value": "props: AboutCardProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_AboutCard_hostname",
+              "value": "hostname: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_AboutCard_followedByCount",
+              "value": "followedByCount: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_AboutCard_bio",
+              "value": "bio: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_AboutCard_viewerIdentity",
+              "value": "viewerIdentity: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_AboutCard_hostIdentity",
+              "value": "hostIdentity: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_AboutCard_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_AboutCard_VerifiedMark",
+              "value": "VerifiedMark",
+              "icon": "component"
+            },
+            {
+              "id": "child_AboutCard_BioModal",
+              "value": "BioModal",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/stream-player/about-card.tsx",
+        "name": "AboutCard"
+      }
+    },
+    {
+      "id": "comp_Skeleton",
+      "title": "Skeleton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Skeleton_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_Skeleton_props",
+              "value": "props (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Skeleton_className",
+              "value": "className: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/ui/skeleton.tsx",
+        "name": "Skeleton"
+      }
+    },
+    {
+      "id": "comp_DialogHeader",
+      "title": "DialogHeader",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_DialogHeader_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_DialogHeader_props",
+              "value": "props (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_DialogHeader_className",
+              "value": "className: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/ui/dialog.tsx",
+        "name": "DialogHeader"
+      }
+    },
+    {
+      "id": "comp_DialogFooter",
+      "title": "DialogFooter",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_DialogFooter_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_DialogFooter_props",
+              "value": "props (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_DialogFooter_className",
+              "value": "className: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "components/ui/dialog.tsx",
+        "name": "DialogFooter"
+      }
+    },
+    {
+      "id": "comp_BrowserLayout",
+      "title": "BrowserLayout",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_BrowserLayout_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_BrowserLayout_children",
+              "value": "children: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/layout.tsx",
+        "name": "BrowserLayout"
+      }
+    },
+    {
+      "id": "comp_AuthLayout",
+      "title": "AuthLayout",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_AuthLayout_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_AuthLayout_children",
+              "value": "children: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(auth)/layout.tsx",
+        "name": "AuthLayout"
+      }
+    },
+    {
+      "id": "comp_SearchPage",
+      "title": "SearchPage",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_SearchPage_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_SearchPage_props",
+              "value": "props: SearchPageProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_SearchPage_searchParams",
+              "value": "searchParams: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/search/page.tsx",
+        "name": "SearchPage"
+      }
+    },
+    {
+      "id": "comp_UserAvatar",
+      "title": "UserAvatar",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_UserAvatar_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_UserAvatar_props",
+              "value": "props: UserAvatar (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_UserAvatar_username",
+              "value": "username: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_UserAvatar_imageUrl",
+              "value": "imageUrl: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_UserAvatar_isLive",
+              "value": "isLive: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_UserAvatar_showBadge",
+              "value": "showBadge: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_UserAvatar_size",
+              "value": "size: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/_components/user-avatar.tsx",
+        "name": "UserAvatar"
+      }
+    },
+    {
+      "id": "comp_UserAvatarSkeleton",
+      "title": "UserAvatarSkeleton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_UserAvatarSkeleton_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_UserAvatarSkeleton_props",
+              "value": "props: UserAvatarSkeletonProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_UserAvatarSkeleton_size",
+              "value": "size: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_UserAvatarSkeleton_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_UserAvatarSkeleton_Skeleton",
+              "value": "Skeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/_components/user-avatar.tsx",
+        "name": "UserAvatarSkeleton"
+      }
+    },
+    {
+      "id": "comp_LiveBadge",
+      "title": "LiveBadge",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_LiveBadge_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_LiveBadge_props",
+              "value": "props: LiveBadgeProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_LiveBadge_className",
+              "value": "className: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/_components/live-badge.tsx",
+        "name": "LiveBadge"
+      }
+    },
+    {
+      "id": "comp_Container",
+      "title": "Container",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Container_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_Container_children",
+              "value": "children: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Container_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_Container_useCreatorSidebar",
+              "value": "useCreatorSidebar (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Container_useMediaQuery",
+              "value": "useMediaQuery (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Container_useEffect",
+              "value": "useEffect",
+              "icon": "hook"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/_components/container.tsx",
+        "name": "Container"
+      }
+    },
+    {
+      "id": "comp_Home",
+      "title": "Home",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "app/(browse)/(home)/page.tsx",
+        "name": "Home"
+      }
+    },
+    {
+      "id": "comp_UserPage",
+      "title": "UserPage",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_UserPage_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_UserPage_props",
+              "value": "props: UserPageProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_UserPage_params",
+              "value": "params: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_UserPage_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_UserPage_StreamPlayer",
+              "value": "StreamPlayer",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/[username]/page.tsx",
+        "name": "UserPage"
+      }
+    },
+    {
+      "id": "comp_UserLoading",
+      "title": "UserLoading",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_UserLoading_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_UserLoading_StreamPlayerSkeleton",
+              "value": "StreamPlayerSkeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/[username]/loading.tsx",
+        "name": "UserLoading"
+      }
+    },
+    {
+      "id": "comp_Logo",
+      "title": "Logo",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/_components/navbar/logo.tsx",
+        "name": "Logo"
+      }
+    },
+    {
+      "id": "comp_Results",
+      "title": "Results",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Results_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_Results_ResultCard",
+              "value": "ResultCard",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/(home)/_components/results.tsx",
+        "name": "Results"
+      }
+    },
+    {
+      "id": "comp_ResultsSkeleton",
+      "title": "ResultsSkeleton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ResultsSkeleton_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_ResultsSkeleton_Skeleton",
+              "value": "Skeleton",
+              "icon": "component"
+            },
+            {
+              "id": "child_ResultsSkeleton_ResultCardSkeleton",
+              "value": "ResultCardSkeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/(home)/_components/results.tsx",
+        "name": "ResultsSkeleton"
+      }
+    },
+    {
+      "id": "comp_ResultCard",
+      "title": "ResultCard",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ResultCard_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_ResultCard_props",
+              "value": "props: ResultCardProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ResultCard_data",
+              "value": "data: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_ResultCard_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_ResultCard_Thumbnail",
+              "value": "Thumbnail",
+              "icon": "component"
+            },
+            {
+              "id": "child_ResultCard_UserAvatar",
+              "value": "UserAvatar",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/(home)/_components/result-card.tsx",
+        "name": "ResultCard"
+      }
+    },
+    {
+      "id": "comp_ResultCardSkeleton",
+      "title": "ResultCardSkeleton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ResultCardSkeleton_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_ResultCardSkeleton_ThumbnailSkeleton",
+              "value": "ThumbnailSkeleton",
+              "icon": "component"
+            },
+            {
+              "id": "child_ResultCardSkeleton_UserAvatarSkeleton",
+              "value": "UserAvatarSkeleton",
+              "icon": "component"
+            },
+            {
+              "id": "child_ResultCardSkeleton_Skeleton",
+              "value": "Skeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/(home)/_components/result-card.tsx",
+        "name": "ResultCardSkeleton"
+      }
+    },
+    {
+      "id": "comp_CreatorLayout",
+      "title": "CreatorLayout",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_CreatorLayout_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_CreatorLayout_params",
+              "value": "params: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_CreatorLayout_children",
+              "value": "children: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_CreatorLayout_dependencies",
+          "name": "Dependencies",
+          "items": [
+            {
+              "id": "dep_CreatorLayout_Sidebar",
+              "value": "Sidebar from './_components/sidebar/index'",
+              "icon": "dependency"
+            },
+            {
+              "id": "dep_CreatorLayout_Container",
+              "value": "Container from './_components/container'",
+              "icon": "dependency"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_CreatorLayout_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_CreatorLayout_Container",
+              "value": "Container",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/layout.tsx",
+        "name": "CreatorLayout"
+      }
+    },
+    {
+      "id": "comp_Wrapper",
+      "title": "Wrapper",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Wrapper_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_Wrapper_children",
+              "value": "children: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Wrapper_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_Wrapper_useCreatorSidebar",
+              "value": "useCreatorSidebar (custom)",
+              "icon": "hook"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/_components/sidebar/wrapper.tsx",
+        "name": "Wrapper"
+      }
+    },
+    {
+      "id": "comp_UserItem",
+      "title": "UserItem",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_UserItem_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_UserItem_props",
+              "value": "props: UserItemProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_UserItem_username",
+              "value": "username: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_UserItem_imageUrl",
+              "value": "imageUrl: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_UserItem_isLive",
+              "value": "isLive: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_UserItem_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_UserItem_usePathname",
+              "value": "usePathname (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_UserItem_useSidebar",
+              "value": "useSidebar (custom)",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_UserItem_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_UserItem_UserAvatar",
+              "value": "UserAvatar",
+              "icon": "component"
+            },
+            {
+              "id": "child_UserItem_LiveBadge",
+              "value": "LiveBadge",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/_components/sidebar/user-item.tsx",
+        "name": "UserItem"
+      }
+    },
+    {
+      "id": "comp_UserItemSkeleton",
+      "title": "UserItemSkeleton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_UserItemSkeleton_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_UserItemSkeleton_Skeleton",
+              "value": "Skeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/_components/sidebar/user-item.tsx",
+        "name": "UserItemSkeleton"
+      }
+    },
+    {
+      "id": "comp_Toggle",
+      "title": "Toggle",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Toggle_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_Toggle_useCreatorSidebar",
+              "value": "useCreatorSidebar (custom)",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Toggle_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_Toggle_Hint",
+              "value": "Hint",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/_components/sidebar/toggle.tsx",
+        "name": "Toggle"
+      }
+    },
+    {
+      "id": "comp_ToggleSkeleton",
+      "title": "ToggleSkeleton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ToggleSkeleton_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_ToggleSkeleton_Skeleton",
+              "value": "Skeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/_components/sidebar/toggle.tsx",
+        "name": "ToggleSkeleton"
+      }
+    },
+    {
+      "id": "comp_Recommended",
+      "title": "Recommended",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Recommended_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_Recommended_props",
+              "value": "props: RecommendedProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Recommended_data",
+              "value": "data: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Recommended_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_Recommended_useSidebar",
+              "value": "useSidebar (custom)",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Recommended_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_Recommended_UserItem",
+              "value": "UserItem",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/_components/sidebar/recommended.tsx",
+        "name": "Recommended"
+      }
+    },
+    {
+      "id": "comp_RecommendedSkeleton",
+      "title": "RecommendedSkeleton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_RecommendedSkeleton_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_RecommendedSkeleton_UserItemSkeleton",
+              "value": "UserItemSkeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/_components/sidebar/recommended.tsx",
+        "name": "RecommendedSkeleton"
+      }
+    },
+    {
+      "id": "comp_Sidebar",
+      "title": "Sidebar",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Sidebar_dependencies",
+          "name": "Dependencies",
+          "items": [
+            {
+              "id": "dep_Sidebar_Wrapper",
+              "value": "Wrapper from './wrapper'",
+              "icon": "dependency"
+            },
+            {
+              "id": "dep_Sidebar_Toggle",
+              "value": "Toggle from './toggle'",
+              "icon": "dependency"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Sidebar_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_Sidebar_Wrapper",
+              "value": "Wrapper",
+              "icon": "component"
+            },
+            {
+              "id": "child_Sidebar_Toggle",
+              "value": "Toggle",
+              "icon": "component"
+            },
+            {
+              "id": "child_Sidebar_Navigation",
+              "value": "Navigation",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/_components/sidebar/index.tsx",
+        "name": "Sidebar"
+      }
+    },
+    {
+      "id": "comp_SidebarSkeleton",
+      "title": "SidebarSkeleton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_SidebarSkeleton_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_SidebarSkeleton_ToggleSkeleton",
+              "value": "ToggleSkeleton",
+              "icon": "component"
+            },
+            {
+              "id": "child_SidebarSkeleton_RecommendedSkeleton",
+              "value": "RecommendedSkeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/_components/sidebar/index.tsx",
+        "name": "SidebarSkeleton"
+      }
+    },
+    {
+      "id": "comp_Following",
+      "title": "Following",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Following_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_Following_props",
+              "value": "props: FollowingProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_Following_data",
+              "value": "data: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Following_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_Following_useSidebar",
+              "value": "useSidebar (custom)",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Following_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_Following_UserItem",
+              "value": "UserItem",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/_components/sidebar/following.tsx",
+        "name": "Following"
+      }
+    },
+    {
+      "id": "comp_FollowingSkeleton",
+      "title": "FollowingSkeleton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_FollowingSkeleton_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_FollowingSkeleton_UserItemSkeleton",
+              "value": "UserItemSkeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/_components/sidebar/following.tsx",
+        "name": "FollowingSkeleton"
+      }
+    },
+    {
+      "id": "comp_Search",
+      "title": "Search",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Search_state",
+          "name": "State",
+          "items": [
+            {
+              "id": "state_Search_value",
+              "value": "value: string = \"\"",
+              "icon": "state"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Search_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_Search_useRouter",
+              "value": "useRouter (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Search_useState",
+              "value": "useState",
+              "icon": "hook"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(browse)/_components/navbar/search.tsx",
+        "name": "Search"
+      }
+    },
+    {
+      "id": "comp_Navbar",
+      "title": "Navbar",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Navbar_dependencies",
+          "name": "Dependencies",
+          "items": [
+            {
+              "id": "dep_Navbar_Logo",
+              "value": "Logo from './logo'",
+              "icon": "dependency"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_Navbar_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_Navbar_Logo",
+              "value": "Logo",
+              "icon": "component"
+            },
+            {
+              "id": "child_Navbar_Actions",
+              "value": "Actions",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/_components/navbar/index.tsx",
+        "name": "Navbar"
+      }
+    },
+    {
+      "id": "comp_Page",
+      "title": "Page",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "app/(auth)/sign-in/[[...sign-in]]/page.tsx",
+        "name": "Page"
+      }
+    },
+    {
+      "id": "comp_KeysPage",
+      "title": "KeysPage",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/keys/page.tsx",
+        "name": "KeysPage"
+      }
+    },
+    {
+      "id": "comp_CommunityPage",
+      "title": "CommunityPage",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/community/page.tsx",
+        "name": "CommunityPage"
+      }
+    },
+    {
+      "id": "comp_ChatSettingsPage",
+      "title": "ChatSettingsPage",
+      "type": "component",
+      "sections": [],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/chat/page.tsx",
+        "name": "ChatSettingsPage"
+      }
+    },
+    {
+      "id": "comp_ChatLoading",
+      "title": "ChatLoading",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ChatLoading_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_ChatLoading_Skeleton",
+              "value": "Skeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/chat/loading.tsx",
+        "name": "ChatLoading"
+      }
+    },
+    {
+      "id": "comp_CreatorPage",
+      "title": "CreatorPage",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_CreatorPage_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_CreatorPage_props",
+              "value": "props: CreatorPageProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_CreatorPage_params",
+              "value": "params: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_CreatorPage_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_CreatorPage_StreamPlayer",
+              "value": "StreamPlayer",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/(home)/page.tsx",
+        "name": "CreatorPage"
+      }
+    },
+    {
+      "id": "comp_CreatorLoading",
+      "title": "CreatorLoading",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_CreatorLoading_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_CreatorLoading_StreamPlayerSkeleton",
+              "value": "StreamPlayerSkeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/(home)/loading.tsx",
+        "name": "CreatorLoading"
+      }
+    },
+    {
+      "id": "comp_UrlCard",
+      "title": "UrlCard",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_UrlCard_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_UrlCard_props",
+              "value": "props: UrlCardProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_UrlCard_value",
+              "value": "value: any (required)",
+              "icon": "prop"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/keys/_components/url-card.tsx",
+        "name": "UrlCard"
+      }
+    },
+    {
+      "id": "comp_KeyCard",
+      "title": "KeyCard",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_KeyCard_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_KeyCard_props",
+              "value": "props: KeyCardProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_KeyCard_value",
+              "value": "value: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_KeyCard_state",
+          "name": "State",
+          "items": [
+            {
+              "id": "state_KeyCard_show",
+              "value": "show: boolean = false",
+              "icon": "state"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_KeyCard_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_KeyCard_useState",
+              "value": "useState",
+              "icon": "hook"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/keys/_components/key-card.tsx",
+        "name": "KeyCard"
+      }
+    },
+    {
+      "id": "comp_CopyButton",
+      "title": "CopyButton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_CopyButton_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_CopyButton_props",
+              "value": "props: CopyButtonProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_CopyButton_value",
+              "value": "value: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_CopyButton_state",
+          "name": "State",
+          "items": [
+            {
+              "id": "state_CopyButton_isCopied",
+              "value": "isCopied: boolean = false",
+              "icon": "state"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_CopyButton_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_CopyButton_useState",
+              "value": "useState",
+              "icon": "hook"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/keys/_components/copy-button.tsx",
+        "name": "CopyButton"
+      }
+    },
+    {
+      "id": "comp_ConnectModal",
+      "title": "ConnectModal",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ConnectModal_state",
+          "name": "State",
+          "items": [
+            {
+              "id": "state_ConnectModal_ingressType",
+              "value": "ingressType: RTMP",
+              "icon": "state"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_ConnectModal_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_ConnectModal_useRef",
+              "value": "useRef",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_ConnectModal_useState",
+              "value": "useState",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_ConnectModal_useTransition",
+              "value": "useTransition (custom)",
+              "icon": "hook"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_ConnectModal_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_ConnectModal_DialogHeader",
+              "value": "DialogHeader",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/keys/_components/connect-modal.tsx",
+        "name": "ConnectModal"
+      }
+    },
+    {
+      "id": "comp_UnblockButton",
+      "title": "UnblockButton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_UnblockButton_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_UnblockButton_props",
+              "value": "props: UnblockButtonProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_UnblockButton_userId",
+              "value": "userId: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_UnblockButton_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_UnblockButton_useTransition",
+              "value": "useTransition (custom)",
+              "icon": "hook"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/community/_components/unblock-button.tsx",
+        "name": "UnblockButton"
+      }
+    },
+    {
+      "id": "comp_DataTable",
+      "title": "DataTable",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_DataTable_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_DataTable_props",
+              "value": "props: DataTableProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_DataTable_columns",
+              "value": "columns: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_DataTable_data",
+              "value": "data: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_DataTable_state",
+          "name": "State",
+          "items": [
+            {
+              "id": "state_DataTable_sorting",
+              "value": "sorting: array = []",
+              "icon": "state"
+            },
+            {
+              "id": "state_DataTable_columnFilters",
+              "value": "columnFilters: array = []",
+              "icon": "state"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_DataTable_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_DataTable_useState",
+              "value": "useState",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_DataTable_useReactTable",
+              "value": "useReactTable (custom)",
+              "icon": "hook"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/community/_components/data-table.tsx",
+        "name": "DataTable"
+      }
+    },
+    {
+      "id": "comp_ToggleCard",
+      "title": "ToggleCard",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ToggleCard_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_ToggleCard_props",
+              "value": "props: ToggleCardProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ToggleCard_field",
+              "value": "field: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ToggleCard_label",
+              "value": "label: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_ToggleCard_value",
+              "value": "value: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_ToggleCard_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_ToggleCard_useTransition",
+              "value": "useTransition (custom)",
+              "icon": "hook"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/chat/_components/toggle-card.tsx",
+        "name": "ToggleCard"
+      }
+    },
+    {
+      "id": "comp_ToggleCardSkeleton",
+      "title": "ToggleCardSkeleton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_ToggleCardSkeleton_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_ToggleCardSkeleton_Skeleton",
+              "value": "Skeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/chat/_components/toggle-card.tsx",
+        "name": "ToggleCardSkeleton"
+      }
+    },
+    {
+      "id": "comp_Navigation",
+      "title": "Navigation",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_Navigation_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_Navigation_usePathname",
+              "value": "usePathname (custom)",
+              "icon": "hook"
+            },
+            {
+              "id": "hook_Navigation_useUser",
+              "value": "useUser (custom)",
+              "icon": "hook"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/_components/sidebar/navigation.tsx",
+        "name": "Navigation"
+      }
+    },
+    {
+      "id": "comp_NavItem",
+      "title": "NavItem",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_NavItem_props",
+          "name": "Props",
+          "items": [
+            {
+              "id": "prop_NavItem_props",
+              "value": "props: NavItemProps (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_NavItem_icon",
+              "value": "icon: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_NavItem_label",
+              "value": "label: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_NavItem_href",
+              "value": "href: any (required)",
+              "icon": "prop"
+            },
+            {
+              "id": "prop_NavItem_isActive",
+              "value": "isActive: any (required)",
+              "icon": "prop"
+            }
+          ]
+        },
+        {
+          "id": "sec_comp_NavItem_hooks",
+          "name": "Hooks",
+          "items": [
+            {
+              "id": "hook_NavItem_useCreatorSidebar",
+              "value": "useCreatorSidebar (custom)",
+              "icon": "hook"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/_components/sidebar/nav-item.tsx",
+        "name": "NavItem"
+      }
+    },
+    {
+      "id": "comp_NavItemSkeleton",
+      "title": "NavItemSkeleton",
+      "type": "component",
+      "sections": [
+        {
+          "id": "sec_comp_NavItemSkeleton_children",
+          "name": "Children",
+          "items": [
+            {
+              "id": "child_NavItemSkeleton_Skeleton",
+              "value": "Skeleton",
+              "icon": "component"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "filePath": "app/(dashboard)/u/[username]/_components/sidebar/nav-item.tsx",
+        "name": "NavItemSkeleton"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "comp_RootLayout",
+      "target": "comp_ThemeProvider",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_VolumeControl",
+      "target": "comp_Hint",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_Video",
+      "target": "comp_LiveVideo",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_VariantToggle",
+      "target": "comp_Hint",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_InfoModal",
+      "target": "comp_Hint",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_InfoCard",
+      "target": "comp_InfoModal",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_StreamPlayer",
+      "target": "comp_StreamPlayerSkeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_StreamPlayer",
+      "target": "comp_Video",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_StreamPlayer",
+      "target": "comp_InfoCard",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_StreamPlayerSkeleton",
+      "target": "comp_VideoSkeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_Header",
+      "target": "comp_VerifiedMark",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_FullScreenControl",
+      "target": "comp_Hint",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_CommunityItem",
+      "target": "comp_Hint",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ChatToggle",
+      "target": "comp_Hint",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ChatList",
+      "target": "comp_ChatMessage",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ChatInfo",
+      "target": "comp_Hint",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ChatHeader",
+      "target": "comp_ChatToggle",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ChatHeader",
+      "target": "comp_VariantToggle",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ChatForm",
+      "target": "comp_ChatInfo",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ChatCommunity",
+      "target": "comp_CommunityItem",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_AboutCard",
+      "target": "comp_VerifiedMark",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_AboutCard",
+      "target": "comp_BioModal",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_UserAvatarSkeleton",
+      "target": "comp_Skeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_UserPage",
+      "target": "comp_StreamPlayer",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_UserLoading",
+      "target": "comp_StreamPlayerSkeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_Results",
+      "target": "comp_ResultCard",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ResultsSkeleton",
+      "target": "comp_Skeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ResultsSkeleton",
+      "target": "comp_ResultCardSkeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ResultCard",
+      "target": "comp_Thumbnail",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ResultCard",
+      "target": "comp_UserAvatar",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ResultCardSkeleton",
+      "target": "comp_ThumbnailSkeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ResultCardSkeleton",
+      "target": "comp_UserAvatarSkeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ResultCardSkeleton",
+      "target": "comp_Skeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_CreatorLayout",
+      "target": "comp_Sidebar",
+      "type": "dependency",
+      "metadata": {
+        "path": "./_components/sidebar/index",
+        "isExternal": false
+      }
+    },
+    {
+      "source": "comp_CreatorLayout",
+      "target": "comp_Container",
+      "type": "dependency",
+      "metadata": {
+        "path": "./_components/container",
+        "isExternal": false
+      }
+    },
+    {
+      "source": "comp_CreatorLayout",
+      "target": "comp_Container",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_UserItem",
+      "target": "comp_UserAvatar",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_UserItem",
+      "target": "comp_LiveBadge",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_UserItemSkeleton",
+      "target": "comp_Skeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_Toggle",
+      "target": "comp_Hint",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ToggleSkeleton",
+      "target": "comp_Skeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_Recommended",
+      "target": "comp_UserItem",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_RecommendedSkeleton",
+      "target": "comp_UserItemSkeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_Sidebar",
+      "target": "comp_Wrapper",
+      "type": "dependency",
+      "metadata": {
+        "path": "./wrapper",
+        "isExternal": false
+      }
+    },
+    {
+      "source": "comp_Sidebar",
+      "target": "comp_Toggle",
+      "type": "dependency",
+      "metadata": {
+        "path": "./toggle",
+        "isExternal": false
+      }
+    },
+    {
+      "source": "comp_Sidebar",
+      "target": "comp_Wrapper",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_Sidebar",
+      "target": "comp_Toggle",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_Sidebar",
+      "target": "comp_Navigation",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_SidebarSkeleton",
+      "target": "comp_ToggleSkeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_SidebarSkeleton",
+      "target": "comp_RecommendedSkeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_Following",
+      "target": "comp_UserItem",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_FollowingSkeleton",
+      "target": "comp_UserItemSkeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_Navbar",
+      "target": "comp_Logo",
+      "type": "dependency",
+      "metadata": {
+        "path": "./logo",
+        "isExternal": false
+      }
+    },
+    {
+      "source": "comp_Navbar",
+      "target": "comp_Logo",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_Navbar",
+      "target": "comp_Actions",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ChatLoading",
+      "target": "comp_Skeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_CreatorPage",
+      "target": "comp_StreamPlayer",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_CreatorLoading",
+      "target": "comp_StreamPlayerSkeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ConnectModal",
+      "target": "comp_DialogHeader",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_ToggleCardSkeleton",
+      "target": "comp_Skeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    },
+    {
+      "source": "comp_NavItemSkeleton",
+      "target": "comp_Skeleton",
+      "type": "renders",
+      "metadata": {
+        "relationship": "parent-child"
+      }
+    }
+  ],
+  "metadata": {
+    "projectType": "typescript",
+    "projectName": "React TypeScript Project",
+    "convertedAt": "2025-04-11T01:08:31.523Z",
+    "originalFormat": {}
+  }
+}

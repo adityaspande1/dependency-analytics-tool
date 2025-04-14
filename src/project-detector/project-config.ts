@@ -44,7 +44,6 @@ export const PROJECT_CONFIGS: Record<string, ProjectTypeConfig> = {
     "java": {
         requiredFiles: [
             "src/main/java",
-            "src/"
         ],
         matchAny: true,
         language: "java"

@@ -14,6 +14,7 @@ declare module 'digramaatic_ui' {
     theme?: 'light' | 'dark';
     onNodeSelect?: (nodeId: string) => void;
     onSourceNavigate?: (filePath: string) => void;
+    showDetailedNode?: boolean;
   }
 
   export const Graph: React.FC<GraphProps>;

@@ -211,8 +211,28 @@ export function activate(context: vscode.ExtensionContext) {
         // Show diagram command
         vscode.commands.registerCommand('dependencyAnalytics.showClassDiagram', async (node: any) => {
             if (!node || !node.node) {
-                vscode.window.showErrorMessage('Please select a node to show its diagram');
-                return;
+                // If called from command palette, let the user pick a node
+                if (allNodes.length === 0) {
+                    vscode.window.showErrorMessage('No nodes available. Please run dependency analysis first.');
+                    return;
+                }
+
+                const nodeOptions = allNodes.map(n => ({
+                    label: n.title,
+                    description: n.type,
+                    detail: n.metadata?.filePath || n.metadata?.sourceFile || '',
+                    node: n
+                }));
+
+                const selectedItem = await vscode.window.showQuickPick(nodeOptions, {
+                    placeHolder: 'Select a node to show its dependency diagram'
+                });
+
+                if (!selectedItem) {
+                    return; // User cancelled
+                }
+
+                node = { node: selectedItem.node };
             }
             
             try {
@@ -220,15 +240,42 @@ export function activate(context: vscode.ExtensionContext) {
                 structureTreeProvider.setNode(node.node);
                 
                 // Log to help debug
-                outputChannel.appendLine(`Showing diagram for node: ${node.node.title}`);
+                outputChannel.appendLine(`Showing diagram for node: ${node.node.title} (${node.node.id})`);
+                outputChannel.appendLine(`Node type: ${node.node.type}, metadata: ${JSON.stringify(node.node.metadata)}`);
+                
+                // Check if we have a graph with edges in our state
+                if (currentDependencyGraph?.edges) {
+                    const relatedEdges = currentDependencyGraph.edges.filter(
+                        edge => edge.source === node.node.id || edge.target === node.node.id
+                    );
+                    outputChannel.appendLine(`Found ${relatedEdges.length} related edges for this node`);
+                    
+                    if (relatedEdges.length > 0) {
+                        outputChannel.appendLine(`Sample edge: ${JSON.stringify(relatedEdges[0])}`);
+                    }
+                } else {
+                    outputChannel.appendLine('No edges found in the dependency graph');
+                }
                 
                 // Show the diagram
-                await reactGraphGenerator.showDiagram(
-                    context,
-                    node.node,
-                    allNodes,
-                    'react' // Always use React format
-                );
+                if (currentDependencyGraph) {
+                    // If we have the full graph with edges, use it
+                    await reactGraphGenerator.showDiagram(
+                        context,
+                        node.node,
+                        currentDependencyGraph.nodes,
+                        'react', // Always use React format
+                        currentDependencyGraph
+                    );
+                } else {
+                    // Fallback to just the nodes
+                    await reactGraphGenerator.showDiagram(
+                        context,
+                        node.node,
+                        allNodes,
+                        'react' // Always use React format
+                    );
+                }
             } catch (error) {
                 outputChannel.appendLine(`Error showing diagram: ${error}`);
                 vscode.window.showErrorMessage(`Error showing diagram: ${error}`);
