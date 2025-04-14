@@ -2,8 +2,9 @@
   "version": "v1",
   "packages": {
     "digramaatic_ui": {
-      "signature": "ed8d9f842d76c95a669e4893fd264e3c",
-      "file": true
+      "signature": "03a67be3347d695eb5de1d2a89b884dc",
+      "file": true,
+      "replaced": "^0.0.1"
     }
   }
 }

@@ -27,9 +27,6 @@ export const GraphEdge: React.FC<GraphEdgeProps> = ({
   
   // Calculate the angle for the arrow
   const angle = Math.atan2(targetPos.y - sourcePos.y, targetPos.x - sourcePos.x);
-  const distance = Math.sqrt(
-    Math.pow(targetPos.x - sourcePos.x, 2) + Math.pow(targetPos.y - sourcePos.y, 2)
-  );
 
   // Adjust start and end points to account for node size
   const nodeRadius = 45; // Approximate half of node width

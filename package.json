@@ -48,6 +48,11 @@
         "title": "Show Dependency Diagram",
         "category": "Dependency Analytics",
         "icon": "$(preview)"
+      },
+      {
+        "command": "dependencyAnalytics.showNodeDetails",
+        "title": "Show Node Details",
+        "category": "Dependency Analytics"
       }
     ],
     "menus": {
@@ -101,7 +106,7 @@
   },
   "main": "./dist/extension.js",
   "scripts": {
-   "vscode:prepublish": "npm run package",
+    "vscode:prepublish": "npm run package",
     "compile": "npm run compile:webview && webpack",
     "compile:webview": "cd webview && npm run build",
     "watch": "webpack --watch",
@@ -113,20 +118,20 @@
     "test": "vscode-test"
   },
   "dependencies": {
-    "digramaatic_ui": "^0.0.1"
+    "digramaatic_ui": "file:.yalc/digramaatic_ui"
   },
   "devDependencies": {
-    "@types/vscode": "^1.99.0",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
+    "@types/vscode": "^1.99.0",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.11.0",
-    "eslint": "^8.57.0",
-    "typescript": "^5.4.5",
-    "ts-loader": "^9.5.1",
-    "webpack": "^5.92.1",
-    "webpack-cli": "^5.1.4",
     "@vscode/test-cli": "^0.0.9",
-    "@vscode/test-electron": "^2.4.0"
+    "@vscode/test-electron": "^2.4.0",
+    "eslint": "^8.57.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5",
+    "webpack": "^5.92.1",
+    "webpack-cli": "^5.1.4"
   }
 }

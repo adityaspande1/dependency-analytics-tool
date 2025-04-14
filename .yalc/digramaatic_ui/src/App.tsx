@@ -1,5 +1,5 @@
 // src/App.tsx
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Graph } from './components/Graph';
 import { sampleData, typescriptProjectSample, javaProjectSample, djangoProjectSample } from './lib/data';
 import { Sun, Moon, Info, Search, ChevronDown, ChevronUp, X, ArrowUpRight, ArrowDownRight } from 'lucide-react';

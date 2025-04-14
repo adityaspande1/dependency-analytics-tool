@@ -3,7 +3,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { FileCode, Package, Box, Code, MoreHorizontal, Info, GitFork, X, ArrowUpRight, ArrowDownRight, File, FileText, Component, Database, FolderTree } from 'lucide-react';
-import { Node, Section, SectionItem } from '../types/graph';
+import { Node } from '../types/graph';
 
 interface GraphNodeProps {
   node: Node;
