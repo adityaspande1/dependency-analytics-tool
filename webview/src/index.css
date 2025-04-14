@@ -75,169 +75,102 @@
     pointer-events: none;
   }
   
-  /* Component detail card */
-  .component-detail {
+  /* Graph controls */
+  .graph-controls {
     position: absolute;
-    top: 20px;
-    right: 20px;
-    max-width: 360px;
-    max-height: 80vh;
-    overflow-y: auto;
-    border-radius: 12px;
-    background-color: rgba(30, 30, 30, 0.95);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    z-index: 1000;
-    padding: 1.5rem;
-    animation: slideIn 0.3s ease-out;
-    transition: all 0.3s ease;
-  }
-  
-  .component-detail.closing {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  
-  @keyframes slideIn {
-    from { transform: translateY(-20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-  
-  .component-heading {
-    margin-bottom: 1.5rem;
-    font-weight: bold;
-    font-size: 1.2rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    top: 10px;
+    right: 10px;
+    z-index: 100;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .component-heading .file-path {
-    font-size: 0.7rem;
-    opacity: 0.6;
-    margin-top: 0.25rem;
-    font-weight: normal;
-  }
-  
-  .component-section {
-    margin-bottom: 1.5rem;
+    flex-direction: column;
+    gap: 8px;
+    background-color: rgba(30, 30, 30, 0.5);
     border-radius: 8px;
-    background-color: rgba(45, 45, 45, 0.5);
-    transition: all 0.2s ease;
-    overflow: hidden;
+    padding: 10px;
+    backdrop-filter: blur(4px);
+  }
+
+  .vscode-light .graph-controls {
+    background-color: rgba(240, 240, 240, 0.5);
   }
   
-  .section-heading {
-    font-weight: bold;
-    padding: 0.75rem 1rem;
-    color: #64D2FF;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgba(35, 35, 35, 0.7);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  }
-  
-  .section-heading:hover {
-    background-color: rgba(50, 50, 50, 0.7);
-  }
-  
-  .section-heading .count {
-    background-color: rgba(100, 210, 255, 0.15);
-    padding: 0.15rem 0.5rem;
-    border-radius: 12px;
-    font-size: 0.7rem;
-    color: #64D2FF;
-  }
-  
-  .section-items {
-    padding: 0.5rem 1rem;
-  }
-  
-  .section-item {
-    display: flex;
-    align-items: baseline;
-    padding: 0.4rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  }
-  
-  .section-item:last-child {
-    border-bottom: none;
-  }
-  
-  .item-name {
-    font-weight: bold;
-    margin-right: 0.5rem;
-    min-width: 40%;
-  }
-  
-  .item-value {
-    opacity: 0.85;
-    word-break: break-word;
-  }
-  
-  .item-prop .item-name {
-    color: #F8C555;
-  }
-  
-  .item-state .item-name {
-    color: #FC9AD9;
-  }
-  
-  .item-hook .item-name {
-    color: #56D364;
-  }
-  
-  .item-method .item-name {
-    color: #71B7FF;
-  }
-  
-  .item-button {
-    background-color: rgba(100, 210, 255, 0.15);
-    border: none;
-    color: #64D2FF;
+  .graph-control-button {
+    background-color: rgba(30, 30, 30, 0.7);
+    color: #e0e0e0;
+    border: 1px solid #4a5568;
     border-radius: 4px;
-    padding: 0.3rem 0.6rem;
-    font-size: 0.8rem;
+    padding: 6px 12px;
+    font-size: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
-    margin-top: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   
-  .item-button:hover {
-    background-color: rgba(100, 210, 255, 0.3);
+  .graph-control-button:hover {
+    background-color: rgba(50, 50, 50, 0.9);
+    border-color: #718096;
   }
   
-  .close-detail {
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    font-size: 1.2rem;
+  .vscode-light .graph-control-button {
+    background-color: rgba(240, 240, 240, 0.7);
+    color: #333333;
+    border-color: #cbd5e0;
+  }
+  
+  .vscode-light .graph-control-button:hover {
+    background-color: rgba(220, 220, 220, 0.9);
+    border-color: #a0aec0;
+  }
+  
+  /* Zoom controls */
+  .zoom-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding: 5px;
+    background-color: rgba(30, 30, 30, 0.5);
+    border-radius: 4px;
+  }
+  
+  .vscode-light .zoom-controls {
+    background-color: rgba(240, 240, 240, 0.5);
+  }
+  
+  .zoom-button {
+    width: 24px;
+    height: 24px;
     padding: 0;
-    line-height: 1;
+    font-weight: bold;
+    font-size: 14px;
   }
   
-  .close-detail:hover {
-    color: white;
+  .zoom-level {
+    font-size: 12px;
+    color: #e0e0e0;
+    margin: 0 8px;
+    min-width: 40px;
+    text-align: center;
   }
   
-  /* Collapsible sections */
-  .section-collapsed .section-items {
-    display: none;
+  .vscode-light .zoom-level {
+    color: #333333;
   }
   
-  .section-arrow {
-    font-size: 0.8rem;
-    transition: transform 0.2s ease;
+  /* Infinite canvas styles */
+  .infinite-canvas {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
   }
   
-  .section-collapsed .section-arrow {
-    transform: rotate(-90deg);
+  /* Highlighted node */
+  .graph-node-highlighted {
+    filter: drop-shadow(0 0 12px rgba(255, 193, 7, 0.8));
+    stroke: #ffc107;
+    stroke-width: 2.5px;
   }
 }
 
@@ -251,7 +184,7 @@
   color-scheme: dark;
 }
 
-/* Light theme overrides */
+/* Light theme */
 .vscode-light {
   --background-color: #ffffff;
   --text-color: #333333;
@@ -259,48 +192,6 @@
   --node-stroke: #cbd5e0;
   --edge-stroke: #a0aec0;
   color-scheme: light;
-  
-  .component-detail {
-    background-color: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
-  
-  .component-section {
-    background-color: rgba(240, 240, 240, 0.7);
-  }
-  
-  .section-heading {
-    background-color: rgba(230, 230, 230, 0.7);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    color: #0078D4;
-  }
-  
-  .section-heading .count {
-    background-color: rgba(0, 120, 212, 0.15);
-    color: #0078D4;
-  }
-  
-  .section-item {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  }
-  
-  .item-button {
-    background-color: rgba(0, 120, 212, 0.15);
-    color: #0078D4;
-  }
-  
-  .item-button:hover {
-    background-color: rgba(0, 120, 212, 0.3);
-  }
-  
-  .close-detail {
-    color: rgba(0, 0, 0, 0.7);
-  }
-  
-  .close-detail:hover {
-    color: black;
-  }
 }
 
 /* Tailwind-like utility classes */

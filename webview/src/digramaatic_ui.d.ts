@@ -15,6 +15,13 @@ declare module 'digramaatic_ui' {
     onNodeSelect?: (nodeId: string) => void;
     onSourceNavigate?: (filePath: string) => void;
     showDetailedNode?: boolean;
+    highlightNodeId?: string;
+    zoomable?: boolean;
+    pannable?: boolean;
+    initialZoom?: number;
+    onZoomChange?: (zoom: number) => void;
+    infiniteCanvas?: boolean;
+    nodeSpacing?: number;
   }
 
   export const Graph: React.FC<GraphProps>;

@@ -6,6 +6,13 @@ interface Window {
   vscode: {
     postMessage: (message: any) => void;
   };
+  viewParams?: {
+    singleNodeMode?: boolean;
+    showSections?: boolean;
+    autoLayout?: string;
+    focusedNodeId?: string;
+    fullGraphAvailable?: boolean;
+  };
 }
 
 // Enable JSX

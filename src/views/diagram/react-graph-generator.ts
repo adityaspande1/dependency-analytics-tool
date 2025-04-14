@@ -89,7 +89,9 @@ export class ReactGraphGenerator extends DiagramGenerator {
                     window.viewParams = {
                         singleNodeMode: ${graphData.nodes.length === 1},
                         showSections: true,
-                        autoLayout: "${graphData.nodes.length === 1 ? 'single' : 'circular'}"
+                        autoLayout: "${graphData.nodes.length === 1 ? 'single' : 'circular'}",
+                        focusedNodeId: "${targetNode.id}",
+                        fullGraphAvailable: ${!!graphData.metadata?.fullGraphAvailable}
                     };
                 </script>
                 <style>
@@ -107,220 +109,71 @@ export class ReactGraphGenerator extends DiagramGenerator {
                     
                     /* Component detail view styles */
                     .component-detail {
-                        position: absolute;
-                        top: 20px;
-                        right: 20px;
-                        max-width: 360px;
-                        max-height: 80vh;
-                        overflow-y: auto;
-                        border-radius: 12px;
-                        background-color: rgba(30, 30, 30, 0.95);
-                        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-                        backdrop-filter: blur(8px);
-                        border: 1px solid rgba(255, 255, 255, 0.1);
-                        z-index: 1000;
-                        padding: 1.5rem;
-                        animation: slideIn 0.3s ease-out;
-                        transition: all 0.3s ease;
+                        padding: 2rem;
                     }
-                    
-                    @keyframes slideIn {
-                        from { transform: translateY(-20px); opacity: 0; }
-                        to { transform: translateY(0); opacity: 1; }
-                    }
-                    
                     .component-heading {
-                        margin-bottom: 1.5rem;
+                        margin-bottom: 1rem;
                         font-weight: bold;
-                        font-size: 1.2rem;
-                        padding-bottom: 0.5rem;
-                        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
                     }
-                    
-                    .component-heading .file-path {
-                        font-size: 0.7rem;
-                        opacity: 0.6;
-                        margin-top: 0.25rem;
-                        font-weight: normal;
-                    }
-                    
                     .component-section {
                         margin-bottom: 1.5rem;
+                        border: 1px solid rgba(255, 255, 255, 0.1);
                         border-radius: 8px;
-                        background-color: rgba(45, 45, 45, 0.5);
-                        transition: all 0.2s ease;
-                        overflow: hidden;
+                        padding: 1rem;
                     }
-                    
                     .section-heading {
                         font-weight: bold;
-                        padding: 0.75rem 1rem;
-                        color: #64D2FF;
-                        cursor: pointer;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        background-color: rgba(35, 35, 35, 0.7);
-                        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-                    }
-                    
-                    .section-heading:hover {
-                        background-color: rgba(50, 50, 50, 0.7);
-                    }
-                    
-                    .section-heading .count {
-                        background-color: rgba(100, 210, 255, 0.15);
-                        padding: 0.15rem 0.5rem;
-                        border-radius: 12px;
-                        font-size: 0.7rem;
+                        margin-bottom: 0.5rem;
                         color: #64D2FF;
                     }
-                    
                     .section-items {
-                        padding: 0.5rem 1rem;
-                    }
-                    
-                    .section-item {
                         display: flex;
-                        align-items: baseline;
-                        padding: 0.4rem 0;
-                        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                        flex-direction: column;
+                        gap: 0.5rem;
                     }
-                    
-                    .section-item:last-child {
-                        border-bottom: none;
-                    }
-                    
-                    .item-name {
-                        font-weight: bold;
-                        margin-right: 0.5rem;
-                        min-width: 40%;
-                    }
-                    
-                    .item-value {
-                        opacity: 0.85;
-                        word-break: break-word;
-                    }
-                    
-                    .item-prop .item-name {
+                    .item-prop {
                         color: #F8C555;
                     }
-                    
-                    .item-state .item-name {
+                    .item-state {
                         color: #FC9AD9;
                     }
-                    
-                    .item-hook .item-name {
+                    .item-hook {
                         color: #56D364;
                     }
                     
-                    .item-method .item-name {
-                        color: #71B7FF;
+                    /* Controls */
+                    .graph-controls {
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        z-index: 100;
+                        display: flex;
+                        gap: 8px;
                     }
-                    
-                    .item-button {
-                        background-color: rgba(100, 210, 255, 0.15);
-                        border: none;
-                        color: #64D2FF;
+                    .graph-control-button {
+                        background-color: rgba(30, 30, 30, 0.7);
+                        color: #e0e0e0;
+                        border: 1px solid #4a5568;
                         border-radius: 4px;
-                        padding: 0.3rem 0.6rem;
-                        font-size: 0.8rem;
+                        padding: 6px 12px;
+                        font-size: 12px;
                         cursor: pointer;
                         transition: all 0.2s ease;
                     }
-                    
-                    .item-button:hover {
-                        background-color: rgba(100, 210, 255, 0.3);
+                    .graph-control-button:hover {
+                        background-color: rgba(50, 50, 50, 0.9);
+                        border-color: #718096;
                     }
-                    
-                    .show-more {
-                        width: 100%;
-                        text-align: center;
-                        background: none;
-                        border: none;
-                        color: #64D2FF;
-                        padding: 0.4rem;
-                        font-size: 0.8rem;
-                        cursor: pointer;
-                        opacity: 0.7;
-                    }
-                    
-                    .show-more:hover {
-                        opacity: 1;
-                    }
-                    
-                    /* Improved close button */
-                    .close-detail {
-                        background: none;
-                        border: none;
-                        color: rgba(255, 255, 255, 0.7);
-                        cursor: pointer;
-                        font-size: 1.2rem;
-                        padding: 0;
-                        line-height: 1;
-                    }
-                    
-                    .close-detail:hover {
-                        color: white;
-                    }
-                    
-                    /* Collapsible sections */
-                    .section-collapsed .section-items {
-                        display: none;
-                    }
-                    
-                    .section-arrow {
-                        font-size: 0.8rem;
-                        transition: transform 0.2s ease;
-                    }
-                    
-                    .section-collapsed .section-arrow {
-                        transform: rotate(-90deg);
-                    }
-                    
-                    /* Theme-specific adjustments */
-                    .vscode-light .component-detail {
-                        background-color: rgba(255, 255, 255, 0.95);
-                        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                    }
-                    
-                    .vscode-light .component-section {
+                    .vscode-light .graph-control-button {
                         background-color: rgba(240, 240, 240, 0.7);
+                        color: #333333;
+                        border-color: #cbd5e0;
                     }
-                    
-                    .vscode-light .section-heading {
-                        background-color: rgba(230, 230, 230, 0.7);
-                        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-                    }
-                    
-                    .vscode-light .section-item {
-                        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                    .vscode-light .graph-control-button:hover {
+                        background-color: rgba(220, 220, 220, 0.9);
+                        border-color: #a0aec0;
                     }
                 </style>
-                <script>
-                    // JavaScript for toggling component sections
-                    document.addEventListener('DOMContentLoaded', () => {
-                        // Setup section toggling
-                        document.body.addEventListener('click', (e) => {
-                            if (e.target.closest('.section-heading')) {
-                                const section = e.target.closest('.component-section');
-                                section.classList.toggle('section-collapsed');
-                            }
-                            if (e.target.closest('.close-detail')) {
-                                const detail = e.target.closest('.component-detail');
-                                if (detail) {
-                                    detail.style.opacity = '0';
-                                    detail.style.transform = 'translateY(-20px)';
-                                    setTimeout(() => detail.remove(), 300);
-                                }
-                            }
-                        });
-                    });
-                </script>
             </head>
             <body>
                 <div id="root"></div>
@@ -351,6 +204,21 @@ export class ReactGraphGenerator extends DiagramGenerator {
                             });
                         }
                         break;
+                    case 'toggleFullGraph':
+                        // Toggle between focused node view and full graph view
+                        const fullGraph = this.findGraphData(allNodes);
+                        if (fullGraph) {
+                            const newGraphData = message.showFullGraph 
+                                ? this.prepareFullGraphData(targetNode, allNodes, fullGraph)
+                                : this.prepareGraphData(targetNode, allNodes, graph);
+                                
+                            panel.webview.postMessage({ 
+                                command: 'updateGraphData', 
+                                data: newGraphData,
+                                showFullGraph: message.showFullGraph
+                            });
+                        }
+                        break;
                 }
             },
             undefined,
@@ -359,7 +227,7 @@ export class ReactGraphGenerator extends DiagramGenerator {
     }
     
     /**
-     * Prepare data for the React graph component
+     * Prepare data for the React graph component showing only the target node and its immediate connections
      * @param targetNode The target node to focus on
      * @param allNodes All nodes in the project
      * @param graph Optional full graph data including edges
@@ -530,6 +398,10 @@ export class ReactGraphGenerator extends DiagramGenerator {
         const nodes = allNodes
             .filter(node => nodeIds.has(node.id))
             .map(node => this.transformNodeForReact(node));
+            
+        // Check if a full graph is available
+        const fullGraph = this.findGraphData(allNodes);
+        const fullGraphAvailable = !!fullGraph;
         
         // Return the graph data in format expected by digramaatic_ui
         return {
@@ -545,7 +417,59 @@ export class ReactGraphGenerator extends DiagramGenerator {
             metadata: {
                 generatedBy: "Dependency Analytics Tool for VS Code",
                 focusedNode: targetNode.id,
-                isSingleNode: nodes.length === 1
+                isSingleNode: nodes.length === 1,
+                fullGraphAvailable: fullGraphAvailable,
+                isFullGraph: false
+            }
+        };
+    }
+    
+    /**
+     * Prepare data for the full graph view
+     * @param targetNode The originally selected node
+     * @param allNodes All nodes in the project
+     * @param graph The full graph data including all edges
+     * @returns Graph data in the format expected by the digramaatic_ui library
+     */
+    private prepareFullGraphData(targetNode: Node, allNodes: Node[], graph: Graph): any {
+        // Transform all nodes to the React format
+        const nodes = allNodes.map(node => this.transformNodeForReact(node));
+        
+        // Include all edges
+        const edges = graph.edges.map((edge: any) => ({
+            source: edge.source,
+            target: edge.target,
+            type: edge.type || 'dependency',
+            metadata: edge.metadata || { relationship: 'related' }
+        }));
+        
+        // Return the full graph data
+        return {
+            nodes,
+            edges,
+            projectName: `Complete Project Graph`,
+            language: this.detectLanguage(allNodes),
+            layout: 'force', // Force-directed layout works better for full graphs
+            visualization: {
+                mode: 'graph',
+                singleNodeDetail: false,
+                infiniteCanvas: true,
+                zoomable: true,
+                pannable: true
+            },
+            layoutSettings: {
+                nodeSpacing: 120,      // Increased spacing between nodes
+                edgeLength: 200,       // Longer edges to spread out the graph
+                forceStrength: 0.3,    // Weaker force to allow more natural spreading
+                chargeStrength: -800,  // Stronger charge to push nodes apart
+                centeringForce: 0.5    // Moderate centering force
+            },
+            metadata: {
+                generatedBy: "Dependency Analytics Tool for VS Code",
+                focusedNode: targetNode.id,
+                isSingleNode: false,
+                fullGraphAvailable: true,
+                isFullGraph: true
             }
         };
     }
