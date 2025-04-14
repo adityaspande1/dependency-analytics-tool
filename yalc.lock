@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "digramaatic_ui": {
-      "signature": "03a67be3347d695eb5de1d2a89b884dc",
+      "signature": "7dd3e837a7b40a279ecfd0126d515801",
       "file": true,
       "replaced": "^0.0.1"
     }

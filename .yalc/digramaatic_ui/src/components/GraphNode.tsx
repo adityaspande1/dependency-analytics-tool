@@ -17,6 +17,8 @@ interface GraphNodeProps {
   sizeScale?: number;
   theme?: 'light' | 'dark';
   totalNodesInView: number;
+  isInteractive?: boolean;  // Supporting zoom/pan context
+  zoomScale?: number;       // Adding zoom scale to adjust drag sensitivity
 }
 
 // Get the appropriate icon based on node type
@@ -110,7 +112,9 @@ export const GraphNode: React.FC<GraphNodeProps> = ({
   onShowDependents,
   sizeScale = 1,
   theme = 'light',
-  totalNodesInView
+  totalNodesInView,
+  isInteractive = true,
+  zoomScale = 1,
 }) => {
   // State management
   const [isDragging, setIsDragging] = useState(false);
@@ -137,12 +141,12 @@ export const GraphNode: React.FC<GraphNodeProps> = ({
 
   // Add global mouse event listeners when dragging
   useEffect(() => {
-    if (isDragging) {
+    if (isDragging && isInteractive) {
       const handleMouseMove = (e: MouseEvent) => {
         if (!dragStartedRef.current) {
           // Check if we've moved enough to start a drag
-          const deltaX = Math.abs(e.clientX - dragStartPos.x);
-          const deltaY = Math.abs(e.clientY - dragStartPos.y);
+          const deltaX = Math.abs(e.clientX - dragStartPos.x) / zoomScale;
+          const deltaY = Math.abs(e.clientY - dragStartPos.y) / zoomScale;
           
           if (deltaX > dragThresholdRef.current || deltaY > dragThresholdRef.current) {
             dragStartedRef.current = true;
@@ -152,8 +156,8 @@ export const GraphNode: React.FC<GraphNodeProps> = ({
         }
         
         // Calculate new position based on starting positions and current mouse position
-        const newX = dragStartNodePos.x + (e.clientX - dragStartPos.x);
-        const newY = dragStartNodePos.y + (e.clientY - dragStartPos.y);
+        const newX = dragStartNodePos.x + (e.clientX - dragStartPos.x) / zoomScale;
+        const newY = dragStartNodePos.y + (e.clientY - dragStartPos.y) / zoomScale;
         
         // Update node position
         onPositionChange(node.id, { x: newX, y: newY });
@@ -178,12 +182,12 @@ export const GraphNode: React.FC<GraphNodeProps> = ({
         document.body.classList.remove('cursor-grabbing');
       };
     }
-  }, [isDragging, dragStartPos, dragStartNodePos, node.id, onPositionChange]);
+  }, [isDragging, dragStartPos, dragStartNodePos, node.id, onPositionChange, isInteractive, zoomScale]);
 
   // Node drag start handler
   const handleMouseDown = (e: React.MouseEvent) => {
-    // Don't start dragging if clicked on a menu element
-    if ((e.target as HTMLElement).closest('.node-menu')) {
+    // Don't start dragging if clicked on a menu element or if not interactive
+    if ((e.target as HTMLElement).closest('.node-menu') || !isInteractive) {
       return;
     }
     
@@ -228,8 +232,11 @@ export const GraphNode: React.FC<GraphNodeProps> = ({
   // Determine if we're in dark mode
   const isDark = theme === 'dark';
 
-  // Calculate the node size based on scale
-  const nodeWidth = 180 * sizeScale;
+  // Calculate the node size based on scale and adjust for very large graphs
+  const baseNodeWidth = 180;
+  // Scale nodes down for very large graphs, but not too small
+  const sizeAdjustment = totalNodesInView > 50 ? Math.max(0.7, 1 - (totalNodesInView / 300)) : 1;
+  const nodeWidth = baseNodeWidth * sizeScale * sizeAdjustment;
   
   // Get display values from node
   const displayName = node.name || node.title || `Node ${node.id}`;
@@ -325,7 +332,7 @@ export const GraphNode: React.FC<GraphNodeProps> = ({
         display: showTooltip ? 'block' : 'none'
       }}
     >
-      <div className="font-bold mb-1">{node.title}</div>
+      <div className="font-bold mb-1">{node.title || displayName}</div>
       <div className={`text-xs inline-block px-2 py-0.5 rounded-full mb-2 ${
         theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'
       }`}>
@@ -353,8 +360,8 @@ export const GraphNode: React.FC<GraphNodeProps> = ({
   return (
     <div
       ref={nodeRef}
-      className={`absolute p-3 rounded-lg border-2 ${nodeColor} ${shadowStyle} transition-all duration-200 cursor-grab active:cursor-grabbing select-none
-      ${highlightStyle} ${dragStyle}`}
+      className={`absolute p-3 rounded-lg border-2 ${nodeColor} ${shadowStyle} transition-all duration-200 ${isInteractive ? 'cursor-pointer' : 'cursor-default'} select-none
+      ${highlightStyle} ${dragStyle} pointer-events-auto`}
       style={{
         left: position.x,
         top: position.y,
@@ -373,14 +380,16 @@ export const GraphNode: React.FC<GraphNodeProps> = ({
           {getNodeIcon(displayType)}
           <span className="font-medium text-sm truncate">{displayName}</span>
         </div>
-        <button
-          className={`p-1 rounded-full transition-colors node-menu
-            ${isDark ? 'hover:bg-white/10' : 'hover:bg-black/5'}`}
-          onClick={handleMenuClick}
-          aria-label="Node options"
-        >
-          <MoreHorizontal className="w-4 h-4" />
-        </button>
+        {isInteractive && (
+          <button
+            className={`p-1 rounded-full transition-colors node-menu
+              ${isDark ? 'hover:bg-white/10' : 'hover:bg-black/5'}`}
+            onClick={handleMenuClick}
+            aria-label="Node options"
+          >
+            <MoreHorizontal className="w-4 h-4" />
+          </button>
+        )}
       </div>
       
       {displayPath && (
