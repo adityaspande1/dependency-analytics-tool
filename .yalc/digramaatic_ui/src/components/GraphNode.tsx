@@ -17,12 +17,16 @@ interface GraphNodeProps {
   sizeScale?: number;
   theme?: 'light' | 'dark';
   totalNodesInView: number;
-  isInteractive?: boolean;  // Supporting zoom/pan context
-  zoomScale?: number;       // Adding zoom scale to adjust drag sensitivity
+  isInteractive?: boolean;
+  zoomScale?: number;
 }
 
-// Get the appropriate icon based on node type
-const getNodeIcon = (type: string) => {
+// Extracted helper components and functions
+
+/**
+ * Get the appropriate icon based on node type
+ */
+const NodeIcon: React.FC<{ type: string }> = ({ type }) => {
   switch (type.toLowerCase()) {
     case 'component':
       return <Component className="w-5 h-5" />;
@@ -49,7 +53,9 @@ const getNodeIcon = (type: string) => {
   }
 };
 
-// Get the node color scheme based on its type
+/**
+ * Get the node color scheme based on its type
+ */
 const getNodeColor = (type: string, theme: 'light' | 'dark') => {
   const isDark = theme === 'dark';
   
@@ -101,238 +107,33 @@ const getNodeColor = (type: string, theme: 'light' | 'dark') => {
   }
 };
 
-export const GraphNode: React.FC<GraphNodeProps> = ({ 
-  node, 
-  position, 
-  onPositionChange,
-  isHighlighted = false,
-  isPathHighlighted = false,
-  onNodeClick,
-  onShowDependencies,
-  onShowDependents,
-  sizeScale = 1,
-  theme = 'light',
-  totalNodesInView,
-  isInteractive = true,
-  zoomScale = 1,
-}) => {
-  // State management
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
-  const [dragStartNodePos, setDragStartNodePos] = useState({ x: 0, y: 0 });
-  const [showMenu, setShowMenu] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-  
-  // Refs
-  const nodeRef = useRef<HTMLDivElement>(null);
-  const tooltipTimeoutRef = useRef<number | undefined>(undefined);
-  const dragThresholdRef = useRef(5); // Minimum pixel movement to start drag
-  const dragStartedRef = useRef(false);
+/**
+ * Node tooltip component showing detailed information on hover
+ */
+interface NodeTooltipProps {
+  node: Node;
+  position: { x: number; y: number };
+  show: boolean;
+  theme: 'light' | 'dark';
+}
 
-  // Handle cleanup of tooltip timeout
-  useEffect(() => {
-    return () => {
-      if (tooltipTimeoutRef.current) {
-        window.clearTimeout(tooltipTimeoutRef.current);
-      }
-    };
-  }, []);
+const NodeTooltip: React.FC<NodeTooltipProps> = ({ node, position, show, theme }) => {
+  if (!show) return null;
 
-  // Add global mouse event listeners when dragging
-  useEffect(() => {
-    if (isDragging && isInteractive) {
-      const handleMouseMove = (e: MouseEvent) => {
-        if (!dragStartedRef.current) {
-          // Check if we've moved enough to start a drag
-          const deltaX = Math.abs(e.clientX - dragStartPos.x) / zoomScale;
-          const deltaY = Math.abs(e.clientY - dragStartPos.y) / zoomScale;
-          
-          if (deltaX > dragThresholdRef.current || deltaY > dragThresholdRef.current) {
-            dragStartedRef.current = true;
-          } else {
-            return; // Don't start dragging yet
-          }
-        }
-        
-        // Calculate new position based on starting positions and current mouse position
-        const newX = dragStartNodePos.x + (e.clientX - dragStartPos.x) / zoomScale;
-        const newY = dragStartNodePos.y + (e.clientY - dragStartPos.y) / zoomScale;
-        
-        // Update node position
-        onPositionChange(node.id, { x: newX, y: newY });
-      };
-
-      const handleMouseUp = () => {
-        setIsDragging(false);
-        dragStartedRef.current = false;
-        document.body.classList.remove('cursor-grabbing');
-      };
-
-      // Add global event listeners
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-
-      // Change cursor
-      document.body.classList.add('cursor-grabbing');
-
-      return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mouseup', handleMouseUp);
-        document.body.classList.remove('cursor-grabbing');
-      };
-    }
-  }, [isDragging, dragStartPos, dragStartNodePos, node.id, onPositionChange, isInteractive, zoomScale]);
-
-  // Node drag start handler
-  const handleMouseDown = (e: React.MouseEvent) => {
-    // Don't start dragging if clicked on a menu element or if not interactive
-    if ((e.target as HTMLElement).closest('.node-menu') || !isInteractive) {
-      return;
-    }
-    
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Store starting positions
-    setDragStartPos({ x: e.clientX, y: e.clientY });
-    setDragStartNodePos({ x: position.x, y: position.y });
-    setIsDragging(true);
-    dragStartedRef.current = false;
-  };
-
-  // Handle node click (when not dragging)
-  const handleNodeClick = (e: React.MouseEvent) => {
-    if (!dragStartedRef.current && onNodeClick) {
-      e.preventDefault();
-      e.stopPropagation();
-      onNodeClick(node);
-    }
-  };
-
-  // Handle menu toggle
-  const handleMenuClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowMenu(!showMenu);
-    setShowTooltip(false);
-  };
-
-  // Tooltip show/hide handlers
-  const handleMouseEnter = () => {
-    if (totalNodesInView > 3) {
-      setShowTooltip(true);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setShowTooltip(false);
-  };
-
-  // Determine if we're in dark mode
-  const isDark = theme === 'dark';
-
-  // Calculate the node size based on scale and adjust for very large graphs
-  const baseNodeWidth = 180;
-  // Scale nodes down for very large graphs, but not too small
-  const sizeAdjustment = totalNodesInView > 50 ? Math.max(0.7, 1 - (totalNodesInView / 300)) : 1;
-  const nodeWidth = baseNodeWidth * sizeScale * sizeAdjustment;
-  
-  // Get display values from node
-  const displayName = node.name || node.title || `Node ${node.id}`;
-  const displayType = node.type || 'unknown';
-  
-  // Process filepath for display
-  const displayPath = (() => {
-    const path = node.filepath || '';
-    if (!path) return '';
-    
-    // Limit path length for display
-    return path.length > 25 ? '...' + path.substring(path.length - 25) : path;
-  })();
-
-  // Generate highlight styles based on state
-  const highlightStyle = isHighlighted
-    ? `ring-4 ${isDark ? 'ring-blue-500/70' : 'ring-blue-500'} scale-110 z-20`
-    : isPathHighlighted
-    ? `ring-2 ${isDark ? 'ring-green-500/70' : 'ring-green-500'} z-10`
-    : '';
-
-  // Generate node color based on type and theme
-  const nodeColor = getNodeColor(displayType, theme);
-
-  // Get shadow based on theme and state
-  const shadowStyle = isDark 
-    ? isDragging 
-      ? 'shadow-lg shadow-black/40' 
-      : 'shadow-md shadow-black/30' 
-    : isDragging 
-      ? 'shadow-lg' 
-      : 'shadow-md';
-
-  // Animation style for dragging
-  const dragStyle = isDragging ? 'opacity-80 scale-105' : 'opacity-100';
-
-  // Update position state when props change
-  useEffect(() => {
-    setTooltipPosition({ x: position.x + nodeWidth / 2, y: position.y - 20 });
-  }, [position.x, position.y, nodeWidth]);
-
-  // Render node sections inside the node if there are <= 3 nodes in view
-  const renderInlineDetails = () => {
-    if (totalNodesInView > 3 || !node.sections || node.sections.length === 0) return null;
-    
-    return (
-      <foreignObject
-        x={-nodeWidth / 2}
-        y={nodeWidth / 2 + 10}
-        width={nodeWidth}
-        height={nodeWidth * 3}
-        overflow="visible"
-        className="pointer-events-none"
-      >
-        <div 
-          className={`rounded-md border overflow-auto max-h-60 text-xs p-2 ${
-            theme === 'dark' 
-              ? 'bg-gray-800 border-gray-700 text-gray-200' 
-              : 'bg-white border-gray-300 text-gray-700'
-          }`}
-        >
-          {node.sections.map((section, index) => (
-            <div key={section.id} className={index > 0 ? 'mt-2' : ''}>
-              <div className="font-semibold">{section.name}</div>
-              {section.items.length > 0 && (
-                <ul className="pl-2 mt-1">
-                  {section.items.slice(0, 3).map(item => (
-                    <li key={item.id} className="truncate">{item.value}</li>
-                  ))}
-                  {section.items.length > 3 && (
-                    <li className="text-gray-500">+{section.items.length - 3} more...</li>
-                  )}
-                </ul>
-              )}
-            </div>
-          ))}
-        </div>
-      </foreignObject>
-    );
-  };
-
-  // Create tooltip content for hover
-  const tooltipContent = (
+  return (
     <div
       className={`absolute z-10 rounded-md shadow-lg p-3 pointer-events-none ${
         theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
       }`}
       style={{
-        transform: `translate(${tooltipPosition.x}px, ${tooltipPosition.y}px)`,
+        transform: `translate(${position.x}px, ${position.y}px)`,
         width: '280px',
         maxHeight: '300px',
         overflow: 'auto',
-        display: showTooltip ? 'block' : 'none'
+        display: show ? 'block' : 'none'
       }}
     >
-      <div className="font-bold mb-1">{node.title || displayName}</div>
+      <div className="font-bold mb-1">{node.title || node.name}</div>
       <div className={`text-xs inline-block px-2 py-0.5 rounded-full mb-2 ${
         theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'
       }`}>
@@ -356,6 +157,350 @@ export const GraphNode: React.FC<GraphNodeProps> = ({
       ))}
     </div>
   );
+};
+
+/**
+ * Node context menu component
+ */
+interface NodeMenuProps {
+  node: Node;
+  show: boolean;
+  theme: 'light' | 'dark';
+  onShowDetails: (node: Node) => void;
+  onShowDependencies: (node: Node) => void;
+  onShowDependents: (node: Node) => void;
+  onClose: () => void;
+}
+
+const NodeMenu: React.FC<NodeMenuProps> = ({ 
+  node, 
+  show, 
+  theme, 
+  onShowDetails,
+  onShowDependencies,
+  onShowDependents,
+  onClose 
+}) => {
+  if (!show) return null;
+  
+  const isDark = theme === 'dark';
+  
+  return (
+    <div 
+      className={`absolute right-0 top-full mt-1 ${
+        isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+      } rounded-lg shadow-lg border py-1 w-48 z-50 node-menu`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button 
+        className={`w-full px-3 py-2 text-left text-sm ${
+          isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
+        } flex items-center gap-2`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onShowDetails(node);
+          onClose();
+        }}
+      >
+        <Info className="w-4 h-4" />
+        View Details
+      </button>
+      <button 
+        className={`w-full px-3 py-2 text-left text-sm ${
+          isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
+        } flex items-center gap-2`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onShowDependencies(node);
+          onClose();
+        }}
+      >
+        <ArrowDownRight className="w-4 h-4" />
+        Show Dependencies
+      </button>
+      <button 
+        className={`w-full px-3 py-2 text-left text-sm ${
+          isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
+        } flex items-center gap-2`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onShowDependents(node);
+          onClose();
+        }}
+      >
+        <ArrowUpRight className="w-4 h-4" />
+        Show Dependents
+      </button>
+      <button 
+        className={`w-full px-3 py-2 text-left text-sm ${
+          isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
+        } flex items-center gap-2`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+      >
+        <X className="w-4 h-4" />
+        Close Menu
+      </button>
+    </div>
+  );
+};
+
+/**
+ * Node inline details component shown for graphs with few nodes
+ */
+interface NodeInlineDetailsProps {
+  node: Node;
+  nodeWidth: number;
+  theme: 'light' | 'dark';
+  show: boolean;
+}
+
+const NodeInlineDetails: React.FC<NodeInlineDetailsProps> = ({ node, nodeWidth, theme, show }) => {
+  if (!show || !node.sections || node.sections.length === 0) return null;
+  
+  return (
+    <foreignObject
+      x={-nodeWidth / 2}
+      y={nodeWidth / 2 + 10}
+      width={nodeWidth}
+      height={nodeWidth * 3}
+      overflow="visible"
+      className="pointer-events-none"
+    >
+      <div 
+        className={`rounded-md border overflow-auto max-h-60 text-xs p-2 ${
+          theme === 'dark' 
+            ? 'bg-gray-800 border-gray-700 text-gray-200' 
+            : 'bg-white border-gray-300 text-gray-700'
+        }`}
+      >
+        {node.sections.map((section, index) => (
+          <div key={section.id} className={index > 0 ? 'mt-2' : ''}>
+            <div className="font-semibold">{section.name}</div>
+            {section.items.length > 0 && (
+              <ul className="pl-2 mt-1">
+                {section.items.slice(0, 3).map(item => (
+                  <li key={item.id} className="truncate">{item.value}</li>
+                ))}
+                {section.items.length > 3 && (
+                  <li className="text-gray-500">+{section.items.length - 3} more...</li>
+                )}
+              </ul>
+            )}
+          </div>
+        ))}
+      </div>
+    </foreignObject>
+  );
+};
+
+/**
+ * Core drag handler hook that manages node dragging functionality
+ */
+function useDragHandler(
+  isInteractive: boolean,
+  zoomScale: number,
+  onPositionChange: (id: string, position: { x: number; y: number }) => void,
+  nodeId: string
+) {
+  const [isDragging, setIsDragging] = useState(false);
+  const dragThresholdRef = useRef(8); // Minimum pixel movement to start drag
+  const nodePositionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const mousePositionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const hasDraggedRef = useRef(false);
+
+  useEffect(() => {
+    if (!isDragging || !isInteractive) return;
+
+    // Mouse move handler that applies a direct 1:1 motion
+    const handleMouseMove = (e: MouseEvent) => {
+      // Calculate delta from initial mouse position
+      const deltaX = e.clientX - mousePositionRef.current.x;
+      const deltaY = e.clientY - mousePositionRef.current.y;
+      
+      // Check if we've moved enough to start dragging
+      if (!hasDraggedRef.current) {
+        if (Math.abs(deltaX) > dragThresholdRef.current || 
+            Math.abs(deltaY) > dragThresholdRef.current) {
+          hasDraggedRef.current = true;
+        } else {
+          return; // Don't move yet
+        }
+      }
+
+      // Calculate exact new position
+      // Important: We use the original position as base and add the mouse delta
+      // divided by zoom scale to create a natural 1:1 mouse movement
+      const newX = nodePositionRef.current.x + (deltaX / zoomScale);
+      const newY = nodePositionRef.current.y + (deltaY / zoomScale);
+
+      // Update node position with the exact position
+      onPositionChange(nodeId, { x: newX, y: newY });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      hasDraggedRef.current = false;
+      document.body.classList.remove('cursor-grabbing');
+      
+      // Remove global listeners when drag ends
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    // Add global event listeners for drag
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    document.body.classList.add('cursor-grabbing');
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+      document.body.classList.remove('cursor-grabbing');
+    };
+  }, [isDragging, isInteractive, nodeId, onPositionChange, zoomScale]);
+
+  // Start dragging process
+  const startDrag = (e: React.MouseEvent, position: { x: number; y: number }) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Store initial positions
+    nodePositionRef.current = position;
+    mousePositionRef.current = { x: e.clientX, y: e.clientY };
+    
+    // Start dragging process
+    hasDraggedRef.current = false;
+    setIsDragging(true);
+  };
+
+  return { isDragging, startDrag };
+}
+
+/**
+ * The main GraphNode component 
+ */
+export const GraphNode: React.FC<GraphNodeProps> = ({ 
+  node, 
+  position, 
+  onPositionChange,
+  isHighlighted = false,
+  isPathHighlighted = false,
+  onNodeClick,
+  onShowDependencies,
+  onShowDependents,
+  sizeScale = 1,
+  theme = 'light',
+  totalNodesInView,
+  isInteractive = true,
+  zoomScale = 1,
+}) => {
+  // State
+  const [showMenu, setShowMenu] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  
+  // Refs
+  const nodeRef = useRef<HTMLDivElement>(null);
+  const tooltipTimeoutRef = useRef<number | undefined>(undefined);
+
+  // Use the drag handler hook
+  const { isDragging, startDrag } = useDragHandler(
+    isInteractive,
+    zoomScale,
+    onPositionChange,
+    node.id
+  );
+
+  // Handle node click (when not dragging)
+  const handleNodeClick = (e: React.MouseEvent) => {
+    if (!isDragging && onNodeClick) {
+      e.preventDefault();
+      e.stopPropagation();
+      onNodeClick(node);
+    }
+  };
+
+  // Handle mouse down for dragging
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('.node-menu') || !isInteractive) {
+      return;
+    }
+    startDrag(e, position);
+  };
+
+  // Handle menu toggle
+  const handleMenuClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowMenu(!showMenu);
+    setShowTooltip(false);
+  };
+
+  // Tooltip show/hide handlers
+  const handleMouseEnter = () => {
+    if (totalNodesInView > 3) {
+      setShowTooltip(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setShowTooltip(false);
+  };
+
+  // Cleanup tooltip timeout
+  useEffect(() => {
+    return () => {
+      if (tooltipTimeoutRef.current) {
+        window.clearTimeout(tooltipTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Update tooltip position when node position changes
+  useEffect(() => {
+    const baseNodeWidth = 180;
+    const sizeAdjustment = totalNodesInView > 50 ? Math.max(0.7, 1 - (totalNodesInView / 300)) : 1;
+    const nodeWidth = baseNodeWidth * sizeScale * sizeAdjustment;
+    
+    setTooltipPosition({ x: position.x + nodeWidth / 2, y: position.y - 20 });
+  }, [position.x, position.y, sizeScale, totalNodesInView]);
+
+  // Calculate visual properties
+  const isDark = theme === 'dark';
+  const baseNodeWidth = 180;
+  const sizeAdjustment = totalNodesInView > 50 ? Math.max(0.7, 1 - (totalNodesInView / 300)) : 1;
+  const nodeWidth = baseNodeWidth * sizeScale * sizeAdjustment;
+  
+  // Get display values from node
+  const displayName = node.name || node.title || `Node ${node.id}`;
+  const displayType = node.type || 'unknown';
+  
+  // Process filepath for display
+  const displayPath = (() => {
+    const path = node.filepath || '';
+    if (!path) return '';
+    return path.length > 25 ? '...' + path.substring(path.length - 25) : path;
+  })();
+
+  // Generate styles
+  const highlightStyle = isHighlighted
+    ? `ring-4 ${isDark ? 'ring-blue-500/70' : 'ring-blue-500'} scale-110 z-20`
+    : isPathHighlighted
+    ? `ring-2 ${isDark ? 'ring-green-500/70' : 'ring-green-500'} z-10`
+    : '';
+
+  const nodeColor = getNodeColor(displayType, theme);
+  const shadowStyle = isDark 
+    ? isDragging 
+      ? 'shadow-lg shadow-black/40' 
+      : 'shadow-md shadow-black/30' 
+    : isDragging 
+      ? 'shadow-lg' 
+      : 'shadow-md';
+  const dragStyle = isDragging ? 'opacity-80 scale-105' : 'opacity-100';
 
   return (
     <div
@@ -377,7 +522,7 @@ export const GraphNode: React.FC<GraphNodeProps> = ({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 overflow-hidden">
-          {getNodeIcon(displayType)}
+          <NodeIcon type={displayType} />
           <span className="font-medium text-sm truncate">{displayName}</span>
         </div>
         {isInteractive && (
@@ -403,72 +548,31 @@ export const GraphNode: React.FC<GraphNodeProps> = ({
       </div>
 
       {/* Context Menu */}
-      {showMenu && (
-        <div 
-          className={`absolute right-0 top-full mt-1 ${
-            isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-          } rounded-lg shadow-lg border py-1 w-48 z-50 node-menu`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <button 
-            className={`w-full px-3 py-2 text-left text-sm ${
-              isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
-            } flex items-center gap-2`}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onNodeClick) onNodeClick(node);
-              setShowMenu(false);
-            }}
-          >
-            <Info className="w-4 h-4" />
-            View Details
-          </button>
-          <button 
-            className={`w-full px-3 py-2 text-left text-sm ${
-              isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
-            } flex items-center gap-2`}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onShowDependencies) onShowDependencies(node);
-              setShowMenu(false);
-            }}
-          >
-            <ArrowDownRight className="w-4 h-4" />
-            Show Dependencies
-          </button>
-          <button 
-            className={`w-full px-3 py-2 text-left text-sm ${
-              isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
-            } flex items-center gap-2`}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onShowDependents) onShowDependents(node);
-              setShowMenu(false);
-            }}
-          >
-            <ArrowUpRight className="w-4 h-4" />
-            Show Dependents
-          </button>
-          <button 
-            className={`w-full px-3 py-2 text-left text-sm ${
-              isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
-            } flex items-center gap-2`}
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowMenu(false);
-            }}
-          >
-            <X className="w-4 h-4" />
-            Close Menu
-          </button>
-        </div>
-      )}
+      <NodeMenu 
+        node={node}
+        show={showMenu}
+        theme={theme}
+        onShowDetails={onNodeClick || (() => {})}
+        onShowDependencies={onShowDependencies || (() => {})}
+        onShowDependents={onShowDependents || (() => {})}
+        onClose={() => setShowMenu(false)}
+      />
 
-      {/* Render inline details if applicable */}
-      {renderInlineDetails()}
+      {/* Inline Details for small graphs */}
+      <NodeInlineDetails
+        node={node}
+        nodeWidth={nodeWidth}
+        theme={theme}
+        show={totalNodesInView <= 3}
+      />
 
-      {/* Render tooltip for hovering when many nodes are present */}
-      {showTooltip && totalNodesInView > 3 && tooltipContent}
+      {/* Tooltip for hovering on larger graphs */}
+      <NodeTooltip
+        node={node}
+        position={tooltipPosition}
+        show={showTooltip && totalNodesInView > 3}
+        theme={theme}
+      />
     </div>
   );
 };

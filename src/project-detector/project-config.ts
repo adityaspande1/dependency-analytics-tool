@@ -21,7 +21,6 @@ export const PROJECT_CONFIGS: Record<string, ProjectTypeConfig> = {
     "android": {
         requiredFiles: [
             "build.gradle",
-            "build.gradle.kts",
             "app/src/main/AndroidManifest.xml"
         ],
         matchAny: false,

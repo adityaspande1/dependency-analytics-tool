@@ -1,17 +1,19 @@
 // src/index.ts
-// Component exports
-export { Graph } from './components/Graph'
-export { GraphEdge } from './components/GraphEdge'
-export { GraphNode } from './components/GraphNode'
+// Main component export
+export { Graph } from './components/Graph';
 
-// Type exports 
-export { 
-  type GraphData,
-  type Node,
-  type Edge,
-  type Section,
-  type SectionItem
-} from './types/graph'
+// Graph components
+export * from './components/graph/index';
+
+// Graph node components
+export * from './components/graph-node';
+
+// Types
+export * from './types/graph';
+
+// Utilities
+export * from './utils/graph/nodeStyles';
+export * from './utils/graphLayout';
 
 // Utility exports
 export { 

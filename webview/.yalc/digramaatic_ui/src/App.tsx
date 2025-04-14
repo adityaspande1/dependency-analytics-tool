@@ -73,10 +73,10 @@ function App() {
   // Find related nodes and edges based on the selected node
   const getFilteredGraphData = (): GraphData => {
     if (!selectedNode) return { nodes: [], edges: [], metadata: graphData.metadata };
-
+  
     const nodeIds = new Set<string>([selectedNode.id]);
     const filteredEdges: Edge[] = [];
-
+  
     if (displayMode === 'dependencies' || displayMode === 'dependents') {
       graphData.edges.forEach(edge => {
         if (displayMode === 'dependencies' && edge.source === selectedNode.id) {
@@ -88,12 +88,18 @@ function App() {
         }
       });
     }
-
+  
     const filteredNodes = graphData.nodes.filter(node => nodeIds.has(node.id));
+    
+    // Create a double-check that both source and target exist in our filtered nodes
+    const validNodeIds = new Set(filteredNodes.map(node => node.id));
+    const validEdges = filteredEdges.filter(edge => 
+      validNodeIds.has(edge.source) && validNodeIds.has(edge.target)
+    );
     
     return {
       nodes: filteredNodes,
-      edges: filteredEdges,
+      edges: validEdges, // Use double-verified edges
       metadata: graphData.metadata
     };
   };
