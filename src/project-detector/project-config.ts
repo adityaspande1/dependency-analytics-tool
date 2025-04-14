@@ -50,6 +50,8 @@ export const PROJECT_CONFIGS: Record<string, ProjectTypeConfig> = {
     "python": {
         requiredFiles: [
             "setup.py",
+            "manage.py",
+            "poetry.lock",
             "pyproject.toml",
             "requirements.txt"
         ],

@@ -77,7 +77,7 @@
       "view/item/context": [
         {
           "command": "dependencyAnalytics.showClassDiagram",
-          "when": "view == dependencyView && (viewItem == class || viewItem == component || viewItem == module || viewItem == function || viewItem == interface)",
+          "when": "view == dependencyView && (viewItem == class || viewItem == component || viewItem == module || viewItem == function || viewItem == interface || viewItem == app || viewItem == model || viewItem == view)",
           "group": "inline"
         }
       ]

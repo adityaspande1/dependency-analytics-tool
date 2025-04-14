@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { X, ArrowUpRight, ArrowDownRight, ChevronDown, ChevronRight } from 'lucide-react';
 import { Node } from '../../types/graph';
 
@@ -33,6 +33,74 @@ export const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({
 }) => {
   if (!node || !position) return null;
 
+  // States for drag functionality
+  const [isDragging, setIsDragging] = useState(false);
+  const [panelPosition, setPanelPosition] = useState({
+    x: Math.min(Math.max(position.x + 100, 20), containerSize.width - 370),
+    y: Math.min(Math.max(position.y - 100, 20), containerSize.height - 300)
+  });
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // Update panel position when node or position changes
+  useEffect(() => {
+    if (position) {
+      setPanelPosition({
+        x: Math.min(Math.max(position.x + 100, 20), containerSize.width - 370),
+        y: Math.min(Math.max(position.y - 100, 20), containerSize.height - 300)
+      });
+    }
+  }, [position, containerSize]);
+
+  // Handle mouse down event to start dragging
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Only initiate drag from the header
+    if ((e.target as HTMLElement).closest('.panel-header')) {
+      setIsDragging(true);
+      
+      // Calculate the offset of the mouse position relative to the panel position
+      const rect = panelRef.current?.getBoundingClientRect();
+      if (rect) {
+        setDragOffset({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        });
+      }
+      
+      // Prevent text selection while dragging
+      e.preventDefault();
+    }
+  };
+
+  // Handle mouse move event for dragging
+  const handleMouseMove = (e: MouseEvent) => {
+    if (isDragging) {
+      // Calculate new position based on mouse coordinates and initial offset
+      const newX = Math.max(0, Math.min(e.clientX - dragOffset.x, containerSize.width - 350));
+      const newY = Math.max(0, Math.min(e.clientY - dragOffset.y, containerSize.height - 300));
+      
+      setPanelPosition({ x: newX, y: newY });
+    }
+  };
+
+  // Handle mouse up event to stop dragging
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Add and remove global event listeners for mouse move and up
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, dragOffset]);
+
   const colors = theme === 'dark' 
     ? {
         panel: 'bg-gray-800 border-gray-700',
@@ -59,16 +127,17 @@ export const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({
 
   return (
     <div 
-      className={`fixed z-50 ${colors.panel} backdrop-blur-md rounded-lg shadow-xl border max-h-[80vh] overflow-hidden flex flex-col w-[350px] transition-all duration-300`}
+      ref={panelRef}
+      className={`fixed z-50 ${colors.panel} backdrop-blur-md rounded-lg shadow-xl border max-h-[80vh] overflow-hidden flex flex-col w-[350px] transition-all duration-300 ${isDragging ? 'cursor-grabbing' : ''}`}
       style={{
-        left: position ? 
-              Math.min(Math.max(position.x + 100, 20), containerSize.width - 370) : 20,
-        top: position ? 
-             Math.min(Math.max(position.y - 100, 20), containerSize.height - 300) : 20,
+        left: panelPosition.x,
+        top: panelPosition.y,
+        userSelect: isDragging ? 'none' : 'auto'
       }}
       onClick={(e) => e.stopPropagation()}
+      onMouseDown={handleMouseDown}
     >
-      <div className={`p-3 flex items-center justify-between border-b ${colors.border}`}>
+      <div className={`p-3 flex items-center justify-between border-b ${colors.border} panel-header ${!isDragging ? 'cursor-grab' : 'cursor-grabbing'}`}>
         <div className="flex items-center gap-2">
           {node.type && (
             <span className={`inline-block w-3 h-3 rounded-full`} 
