@@ -195,6 +195,14 @@ export const Graph: React.FC<GraphProps> = ({
   }, []);
 
   const getNodeDisplayPath = useCallback((node: GraphNode) => {
+    // Check if this is a Django model or view
+    if (node.type === 'model' && node.metadata?.app) {
+      return `${node.metadata.app}/models.py`;
+    }
+    if (node.type === 'view' && node.metadata?.app) {
+      return `${node.metadata.app}/views.py`;
+    }
+    // Default fallback to existing logic
     return node.filepath || node.metadata?.filePath || node.metadata?.path || '';
   }, []);
 
@@ -540,7 +548,7 @@ export const Graph: React.FC<GraphProps> = ({
     
     console.log('Request to expand node:', node.id);
     
-    // Keep track of newly added nodes that don't already exist in the current view
+    // Keep track of newly added nodes
     const newNodeIds = new Set<string>();
     const newEdgeKeys = new Set<string>();
     const childEdges = new Set<string>();
@@ -549,19 +557,14 @@ export const Graph: React.FC<GraphProps> = ({
     processedData.edges.forEach((edge) => {
       if (edge.source === node.id) {
         // Add the target node and edge to our tracking sets
+        newNodeIds.add(edge.target);
+        newEdgeKeys.add(`${edge.source}-${edge.target}`);
         childEdges.add(`${edge.source}-${edge.target}`);
-        
-        // Only add to newNodeIds if the node doesn't already have a position
-        // This ensures we only expand to show NEW nodes
-        if (!nodePositions[edge.target] || 
-            (nodePositions[edge.target].x === 0 && nodePositions[edge.target].y === 0)) {
-          newNodeIds.add(edge.target);
-          newEdgeKeys.add(`${edge.source}-${edge.target}`);
-        }
       }
     });
     
     // Check node metadata for any additional dependencies that might not be in edges
+    // This helps find hidden/nested dependencies
     if (node.metadata) {
       // Check for outgoing dependencies
       if (node.metadata.outgoingDependencies && Array.isArray(node.metadata.outgoingDependencies)) {
@@ -574,14 +577,9 @@ export const Graph: React.FC<GraphProps> = ({
             n.metadata?.fullName === dep);
           
           if (dependentNode) {
+            newNodeIds.add(dependentNode.id);
+            newEdgeKeys.add(`${node.id}-${dependentNode.id}`);
             childEdges.add(`${node.id}-${dependentNode.id}`);
-            
-            // Only add to newNodeIds if the node doesn't already have a position
-            if (!nodePositions[dependentNode.id] || 
-                (nodePositions[dependentNode.id].x === 0 && nodePositions[dependentNode.id].y === 0)) {
-              newNodeIds.add(dependentNode.id);
-              newEdgeKeys.add(`${node.id}-${dependentNode.id}`);
-            }
           }
         });
       }
@@ -600,20 +598,29 @@ export const Graph: React.FC<GraphProps> = ({
             (n.metadata?.filePath && importName.includes(n.metadata.filePath)));
           
           if (importedNode) {
+            newNodeIds.add(importedNode.id);
+            newEdgeKeys.add(`${node.id}-${importedNode.id}`);
             childEdges.add(`${node.id}-${importedNode.id}`);
-            
-            // Only add to newNodeIds if the node doesn't already have a position
-            if (!nodePositions[importedNode.id] || 
-                (nodePositions[importedNode.id].x === 0 && nodePositions[importedNode.id].y === 0)) {
-              newNodeIds.add(importedNode.id);
-              newEdgeKeys.add(`${node.id}-${importedNode.id}`);
-            }
           }
         });
       }
     }
     
-    if (newNodeIds.size > 0) {
+    // Find any nodes that might not be visible in the current layout
+    // These are nodes that should be revealed by this expansion
+    const nodesToReveal = new Set<string>();
+    
+    newNodeIds.forEach(nodeId => {
+      // Check if this node already has a position assigned
+      // If not, it's a node we need to add to the layout
+      if (!nodePositions[nodeId] || 
+          (nodePositions[nodeId].x === 0 && nodePositions[nodeId].y === 0)) {
+        nodesToReveal.add(nodeId);
+      }
+    });
+    
+    // If we have new nodes to reveal, update the layout
+    if (nodesToReveal.size > 0) {
       // Get the node's current position as anchor
       const nodePos = nodePositions[node.id] || { x: 0, y: 0 };
       
@@ -626,7 +633,7 @@ export const Graph: React.FC<GraphProps> = ({
         const radius = 200;
         
         // Calculate positions for the newly revealed nodes in a circular arrangement
-        const nodesToPlaceArray = Array.from(newNodeIds);
+        const nodesToPlaceArray = Array.from(nodesToReveal);
         const angleStep = (2 * Math.PI) / Math.max(nodesToPlaceArray.length, 1);
         
         // Start angle - for just one node, place it to the right
@@ -652,14 +659,13 @@ export const Graph: React.FC<GraphProps> = ({
         setNodePositions(newPositions);
         
         // Log feedback
-        console.log(`Added ${newNodeIds.size} new dependencies for node: ${node.name || node.title || node.id}`);
+        console.log(`Revealed ${nodesToReveal.size} hidden dependencies for node: ${node.name || node.title || node.id}`);
       }
     }
     
-    // Update highlighted path to include this node and its immediate outgoing connections
-    // This makes the newly added connections more visible without changing the full graph view
+    // Update highlighted path to include this node and all direct children
     setHighlightedPath({
-      nodes: new Set([node.id, ...childEdges.values()].filter(id => typeof id === 'string')),
+      nodes: new Set([node.id, ...newNodeIds]),
       edges: childEdges,
     });
     

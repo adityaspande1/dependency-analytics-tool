@@ -429,7 +429,8 @@ function convertDjangoDependencies(djangoDependencies: any): Graph {
       sections,
       metadata: {
         app: model.app,
-        meta: model.meta
+        meta: model.meta,
+        filePath: model.file_path || `${model.app}/models.py`
       }
     });
     
@@ -521,7 +522,8 @@ function convertDjangoDependencies(djangoDependencies: any): Graph {
           type: view.type,
           path: view.path,
           http_methods: view.http_methods,
-          template: view.template
+          template: view.template,
+          filePath: view.file_path || `${view.app}/views.py`
         }
       });
       

@@ -294,7 +294,8 @@ class DjangoProjectParser:
                             "fields": [],
                             "methods": [],
                             "meta": {},
-                            "relationships": []
+                            "relationships": [],
+                            "file_path": str(models_file)
                         }
                         
                         # Extract fields and methods
@@ -381,7 +382,8 @@ class DjangoProjectParser:
                         "parameters": [arg.arg for arg in node.args.args],
                         "decorators": [],
                         "models_used": [],
-                        "template": None
+                        "template": None,
+                        "file_path": str(views_file)
                     }
                     
                     # Extract decorators
@@ -429,7 +431,8 @@ class DjangoProjectParser:
                             "parent_views": parent_views,
                             "methods": [],
                             "models_used": [],
-                            "template": None
+                            "template": None,
+                            "file_path": str(views_file)
                         }
                         
                         # Extract methods
