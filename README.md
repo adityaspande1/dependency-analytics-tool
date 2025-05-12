@@ -1,9 +1,12 @@
 # CodeGraph by Optivance
 
+
+![image](https://github.com/user-attachments/assets/3a484014-b7b4-4d1d-ba44-667aae273ee2)
+
 A powerful Visual Studio Code extension that provides comprehensive dependency analysis and visualization for your projects. CodeGraph helps developers understand and navigate complex codebases by analyzing dependencies between classes, components, and modules.
 
 <!-- Add a banner image of the extension here -->
-![image](https://github.com/user-attachments/assets/3a484014-b7b4-4d1d-ba44-667aae273ee2)
+
 
 
 ## Features
