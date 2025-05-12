@@ -3,7 +3,8 @@
 A powerful Visual Studio Code extension that provides comprehensive dependency analysis and visualization for your projects. CodeGraph helps developers understand and navigate complex codebases by analyzing dependencies between classes, components, and modules.
 
 <!-- Add a banner image of the extension here -->
-![Banner Image](path_to_banner_image.png)
+![image](https://github.com/user-attachments/assets/3a484014-b7b4-4d1d-ba44-667aae273ee2)
+
 
 ## Features
 
@@ -12,7 +13,7 @@ A powerful Visual Studio Code extension that provides comprehensive dependency a
 - Visual representation of class hierarchies and module dependencies
 - Easy-to-navigate graph interface
 <!-- Add a GIF demonstrating the dependency visualization feature -->
-![Dependency Visualization](path_to_dependency_viz.gif)
+
 
 ### 2. Smart Code Analysis
 - Supports multiple programming languages:
@@ -21,22 +22,19 @@ A powerful Visual Studio Code extension that provides comprehensive dependency a
   - Java
 - Real-time analysis of code structure
 - Automatic detection of dependencies and relationships
-<!-- Add a screenshot of code analysis in action -->
-![Code Analysis](path_to_code_analysis.png)
+
 
 ### 3. Navigation Tools
 - Quick navigation to class/component declarations
 - Detailed view of class structures
 - Comprehensive dependency tree view
-<!-- Add a GIF showing navigation features -->
-![Navigation Features](path_to_navigation.gif)
+
 
 ### 4. Integration Features
 - Seamless VS Code integration
 - Custom side panel for easy access
 - Context-aware commands and shortcuts
-<!-- Add a screenshot of the extension integrated in VS Code -->
-![VS Code Integration](path_to_integration.png)
+
 
 ## Installation
 
@@ -59,10 +57,7 @@ A powerful Visual Studio Code extension that provides comprehensive dependency a
 ### Setting Up the Development Environment
 
 1. Clone the repository
-   ```bash
-   git clone https://github.com/Optivance/codegraph.git
-   cd codegraph
-   ```
+
 
 2. Install dependencies
    ```bash
