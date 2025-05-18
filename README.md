@@ -236,10 +236,10 @@ CodeGraph is developed and maintained by Optivance, a team dedicated to creating
 ## More Screenshots
 
 ### Feature 1: Class Structure View
-![Class Structure](path_to_class_structure.png)
+![image](https://github.com/user-attachments/assets/060f5a48-5eb1-4c3c-926c-9f4980c799fe)
+
 
 ### Feature 2: Dependency Graph
-![Dependency Graph](path_to_dependency_graph.gif)
+![image](https://github.com/user-attachments/assets/1602e8a7-0b10-4a73-913f-cb718eab020e)
 
-### Feature 3: Code Navigation
-![Code Navigation](path_to_code_navigation.gif)
+
